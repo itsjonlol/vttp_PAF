@@ -30,6 +30,7 @@ import main.java.vttp_lecture22ws.vttp_lecture22ws.service.RSVPService;
 
 
 
+
 @RestController
 @RequestMapping("/api")
 public class RSVPRestController {
@@ -74,22 +75,13 @@ public class RSVPRestController {
 
         Optional<RSVP> optRSVP = rsvpService.getRSVPByEmail(requestedEmail);
         if (!optRSVP.isEmpty()) {
-            rsvpService.updateRSVP(rsvp, requestedEmail);
+            rsvpService.updateRSVP(rsvp, optRSVP.get().getRsvp_id());
         } else {
             rsvpService.addRSVP(rsvp);
         }
-        
-        // RSVP rsvp = new RSVP();
-        // rsvp.setEmail(rsvpJsonObject.getString("email"));
-        // rsvp.setPhone(rsvpJsonObject.getString("phone"));
-        // rsvp.setComments(rsvpJsonObject.getString("comments"));
-        // SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        // Date rsvpDate = sdf.parse(rsvpJsonObject.getString("confirmDate"));
-        // rsvp.setConfirmDate(rsvpDate);
-
-
-
-        return ResponseEntity.status(HttpStatus.CREATED).body("Operation successful");
+        Map<String,String> successMessage = new HashMap<>();
+        successMessage.put("SuccessMessage","Operation successful");
+        return ResponseEntity.status(HttpStatus.CREATED).header("Content-Type", "application/json").body(successMessage);
     }
     
     @PutMapping("/rsvp/{rsvpemail}") 
@@ -106,7 +98,9 @@ public class RSVPRestController {
         JsonReader reader = Json.createReader(is);
         JsonObject rsvpJsonObject = reader.readObject();
 
-        RSVP rsvp = new RSVP();
+        // RSVP rsvp = new RSVP();
+        RSVP rsvp = optRSVP.get();
+        Integer rsvp_id = rsvp.getRsvp_id();
         String finalEmail = rsvpJsonObject.getString("email");
         rsvp.setEmail(finalEmail);
         rsvp.setPhone(rsvpJsonObject.getString("phone"));
@@ -114,9 +108,19 @@ public class RSVPRestController {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         Date rsvpDate = sdf.parse(rsvpJsonObject.getString("confirmDate"));
         rsvp.setConfirmDate(rsvpDate);
-        rsvpService.updateRSVP(rsvp, finalEmail);
-        return ResponseEntity.status(201).body("Update successful");
+        rsvpService.updateRSVP(rsvp, rsvp_id);
+        Map<String,String> successMessage = new HashMap<>();
+        successMessage.put("SuccessMessage","Operation successful");
+        return ResponseEntity.status(HttpStatus.CREATED).header("Content-Type", "application/json").body(successMessage);
     }
+
+    @GetMapping("rsvps/count")
+    public ResponseEntity<?> getRSVPCount() {
+        Map<String,Integer> countMap = new HashMap<>();
+        countMap.put("Count",rsvpService.countRSVP());
+        return ResponseEntity.status(201).header("Content-Type", "application/json").body(countMap);
+    }
+    
         
 }
     

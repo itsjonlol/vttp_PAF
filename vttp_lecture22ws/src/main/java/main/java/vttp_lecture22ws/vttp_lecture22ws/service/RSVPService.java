@@ -26,7 +26,11 @@ public class RSVPService {
     public void addRSVP(RSVP rsvp) {
         rsvpRepo.addRSVP(rsvp);
     }
-    public void updateRSVP(RSVP rsvp,String email) {
-        rsvpRepo.updateRSVP(rsvp,email);
+    public void updateRSVP(RSVP rsvp,Integer rsvp_id) {
+        rsvpRepo.updateRSVP(rsvp,rsvp_id);
+    }
+
+    public Integer countRSVP() {
+        return rsvpRepo.getRSVPCount();
     }
 }

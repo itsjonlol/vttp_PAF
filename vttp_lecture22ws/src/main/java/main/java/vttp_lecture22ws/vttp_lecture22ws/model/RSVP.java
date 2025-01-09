@@ -6,7 +6,7 @@ import org.springframework.jdbc.support.rowset.SqlRowSet;
 
 public class RSVP {
     
-
+    private Integer rsvp_id;
     private String email;
     private String phone;
     private Date confirmDate;
@@ -16,8 +16,16 @@ public class RSVP {
 
     }
     
-
     public RSVP(String email, String phone, Date confirmDate, String comments) {
+        this.email = email;
+        this.phone = phone;
+        this.confirmDate = confirmDate;
+        this.comments = comments;
+    }
+
+
+    public RSVP(Integer rsvp_id, String email, String phone, Date confirmDate, String comments) {
+        this.rsvp_id = rsvp_id;
         this.email = email;
         this.phone = phone;
         this.confirmDate = confirmDate;
@@ -57,12 +65,23 @@ public class RSVP {
         this.comments = comments;
     }
 
+    
+
     public static RSVP toRSVP(SqlRowSet rs) {
         RSVP rsvp = new RSVP();
+        rsvp.setRsvp_id(rs.getInt("rsvp_id"));
         rsvp.setEmail(rs.getString("email"));
         rsvp.setPhone(rs.getString("phone"));
         rsvp.setConfirmDate(rs.getDate("confirmdate"));
         rsvp.setComments(rs.getString("comments"));
         return rsvp;
+    }
+
+    public Integer getRsvp_id() {
+        return rsvp_id;
+    }
+
+    public void setRsvp_id(Integer rsvp_id) {
+        this.rsvp_id = rsvp_id;
     }
 }

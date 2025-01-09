@@ -10,9 +10,10 @@ public class Queries {
         SELECT * FROM rsvp WHERE email = ?
     """;
 
+    //cannot insert duplicate keys
     public static final String SQL_ADD_RSVP = """
             
-            INSERT INTO rsvp 
+            INSERT INTO rsvp(email,phone,confirmdate,comments)
             VALUES (?,?,?,?);
             """;
 
@@ -20,9 +21,13 @@ public class Queries {
     
     UPDATE rsvp 
     SET email = ?, phone = ?, confirmdate = ?, comments = ?
-    WHERE email like ?
+    WHERE rsvp_id = ?
     """;
 
+    public static final String SQL_COUNT_RSVP = """
+            
+        SELECT count(*) rsvp_count from rsvp;
+            """;
 
 }
 

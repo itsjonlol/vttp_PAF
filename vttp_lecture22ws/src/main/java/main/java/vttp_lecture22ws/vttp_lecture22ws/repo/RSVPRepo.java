@@ -11,6 +11,7 @@ import org.springframework.stereotype.Repository;
 
 import main.java.vttp_lecture22ws.vttp_lecture22ws.model.RSVP;
 import static main.java.vttp_lecture22ws.vttp_lecture22ws.repo.Queries.SQL_ADD_RSVP;
+import static main.java.vttp_lecture22ws.vttp_lecture22ws.repo.Queries.SQL_COUNT_RSVP;
 import static main.java.vttp_lecture22ws.vttp_lecture22ws.repo.Queries.SQL_GET_ALL_RSVP;
 import static main.java.vttp_lecture22ws.vttp_lecture22ws.repo.Queries.SQL_RSVP_BY_EMAIL;
 import static main.java.vttp_lecture22ws.vttp_lecture22ws.repo.Queries.SQL_UPDATE_RSVP;
@@ -45,13 +46,18 @@ public class RSVPRepo {
         return added>0;
     }
     
-    public Boolean updateRSVP(RSVP rsvp,String email) {
-        int updated = template.update(SQL_UPDATE_RSVP,rsvp.getEmail(),rsvp.getPhone(),rsvp.getConfirmDate(),rsvp.getComments(),email);
+    public Boolean updateRSVP(RSVP rsvp,Integer rsvp_id) {
+        int updated = template.update(SQL_UPDATE_RSVP,rsvp.getEmail(),rsvp.getPhone(),rsvp.getConfirmDate(),rsvp.getComments(),rsvp_id);
         return updated>0;
     }
 
     public Integer getRSVPCount() {
-        return null;
+        Integer count = 0;
+        SqlRowSet rs = template.queryForRowSet(SQL_COUNT_RSVP);
+        if (rs.next()) {
+            count = rs.getInt("rsvp_count");
+        }
+        return count;
     }
 
 }
