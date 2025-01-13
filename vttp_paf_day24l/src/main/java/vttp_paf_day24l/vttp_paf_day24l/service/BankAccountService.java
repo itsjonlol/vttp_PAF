@@ -40,7 +40,7 @@ public class BankAccountService {
             bankAccountRepo.updateAccountById(accountTo);
             return true;
         }
-        return false;
+        return false;// added transactional
         
         //check both account active or not
         //check transferrer has sufficient balance to transfer the transfer amount
