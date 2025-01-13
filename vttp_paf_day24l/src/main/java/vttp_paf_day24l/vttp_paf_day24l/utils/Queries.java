@@ -41,4 +41,13 @@ public class Queries {
 
     public static final String SQL_UPDATE_BOOK_STATUS_BY_ID = "update book set isActive = ? where id = ?";
 
+    public static final String SQL_INSERT_RESERVATION = """
+                    
+        insert into Reservation(full_name,reserve_date) values (?,?)
+                    """;
+
+    public static final String SQL_RESERVATION_DETAIL = """
+                    insert into ReservationDetail(book_id,reservation_id)
+                    """;
+
 }
