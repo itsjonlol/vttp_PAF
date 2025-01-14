@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+</head>
+<body>
+
+    <!-- private Integer orderId;
+    private Date orderDate;
+    private String customerName;
+    private String shipAddress;
+    private String notes;
+    private Float tax;
+    private List<OrderDetails> orderDetailsList; -->
+
+        <!-- private Integer detailsId;
+    private Integer product;
+    private Float unitPrice;
+    private Float discount;
+    private Integer quantity;
+    private Integer orderId; -->
+
+    <div class = "container">
+        <div class = "row">
+            <div class = "col-lg-6 col-md-6 col-sm-6 container justify-content-center card">
+                <h1 class = "text-center"> Create New Order</h1>
+                <div class = "card-body">
+                <form method = "POST" th:object="${orderform}" th:action="@{/api/order}">
+                    <!-- <div class = "form-group">
+                        <label>ID</label>
+                        <input type="text" name="orderId" th:field="*{orderId}" class = "form-control" placeholder = "ID required">
+                    </div> -->
+
+                    <div class = "form-group">
+                        <label>Customer name</label>
+                        <input type="text" name="customerName" th:field="*{customerName}" class = "form-control" placeholder = "Name required">
+                    </div>
+
+                    <div class = "form-group">
+                        <label>Address</label>
+                        <input type="text" name="shipAddress" th:field="*{shipAddress}" class = "form-control" placeholder = "Address required">
+                    </div>
+
+                    <div class = "form-group">
+                        <label>Notes</label>
+                        <input type="text" name="notes" th:field="*{notes}" class = "form-control" placeholder = "Write any comments">
+                    </div>
+
+                    <div class="form-group">
+                        <h4>Order Item 1</h4>
+                        <div>
+                            <label>Product</label>
+                            <input type="text" name="orderDetailsList[0].product" th:field="*{orderDetailsList[0].product}" class="form-control" placeholder="Write product details">
+                        </div>
+                        <div>
+                            <label>Unit Price</label>
+                            <input type="number" name="orderDetailsList[0].unitPrice" th:field="*{orderDetailsList[0].unitPrice}" class="form-control" placeholder="Write product unit price" step="0.01" min="0">
+                        </div>
+                        <div>
+                            <label>Discount</label>
+                            <input type="number" name="orderDetailsList[0].discount" th:field="*{orderDetailsList[0].discount}" class="form-control" placeholder="Write product discount" step="0.01" min="0">
+                        </div>
+                        <div>
+                            <label>Quantity</label>
+                            <input type="number" name="orderDetailsList[0].quantity" th:field="*{orderDetailsList[0].quantity}" class="form-control" placeholder="Write product quantity" step="0.01" min="0">
+                        </div>
+                    </div>
+
+                    <!-- Order Item 2 -->
+                    <div class="form-group">
+                        <h4>Order Item 2</h4>
+                        <div>
+                            <label>Product</label>
+                            <input type="text" name="orderDetailsList[1].product" th:field="*{orderDetailsList[1].product}" class="form-control" placeholder="Write product details">
+                        </div>
+                        <div>
+                            <label>Unit Price</label>
+                            <input type="number" name="orderDetailsList[1].unitPrice" th:field="*{orderDetailsList[1].unitPrice}" class="form-control" placeholder="Write product unit price" step="0.01" min="0">
+                        </div>
+                        <div>
+                            <label>Discount</label>
+                            <input type="number" name="orderDetailsList[1].discount" th:field="*{orderDetailsList[1].discount}" class="form-control" placeholder="Write product discount" step="0.01" min="0">
+                        </div>
+                        <div>
+                            <label>Quantity</label>
+                            <input type="number" name="orderDetailsList[1].quantity" th:field="*{orderDetailsList[1].quantity}" class="form-control" placeholder="Write product quantity" step="0.01" min="0">
+                        </div>
+                    </div>
+
+                    
+
+                    <!-- <div class = "form-group">
+                        <label>Tax</label>
+                        <input type="number" name="tax" th:field="*{tax}" class = "form-control" placeholder = "Write tax" step="0.01" min="0">
+                    </div>
+                    <div class = "form-group">
+                        <label>Order Product Details</label>
+                        <input type="text" name="orderDetails_product" th:field="*{orderDetails.product}" class = "form-control" placeholder = "Write product details" >
+                    </div>
+                    <div class = "form-group">
+                        <label>Order Product Unit Price</label>
+                        <input type="text" name="orderDetails_unitprice" th:field="*{orderDetails.unitPrice}" class = "form-control" placeholder = "Write product unit price" >
+                    </div>
+                    <div class = "form-group">
+                        <label>Order Product Discount</label>
+                        <input type="text" name="orderDetails_discount" th:field="*{orderDetails.discount}" class = "form-control" placeholder = "Write product discount" step="0.01" min="0" >
+                    </div>
+                    <div class = "form-group">
+                        <label>Order Product Quantity</label>
+                        <input type="text" name="orderDetails_quantity" th:field="*{orderDetails.quantity}" class = "form-control" placeholder = "Write product quantity" step="0.01" min="0">
+                    </div> -->
+
+                 
+
+                    <!-- <div class="form-group">
+                        <label>Order Details</label>
+                        <div th:each="detail : ${orderDetails}">
+                            <div class="form-group">
+                                <label for="product">Product:</label>
+                                <input type="text" name="product" th:field="${detail.product}" class="form-control" placeholder="Enter product name">
+                            </div>
+
+                            <hr>
+                        </div>
+                    </div> -->
+
+
+
+
+
+                    <br>
+        
+                    <div class = "box-footer">
+                        <button type="submit" class = "btn btn-primary">Create</button>
+                    </div>
+
+                </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    
+</body>
+</html>
