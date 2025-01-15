@@ -23,95 +23,106 @@
     private Integer quantity;
     private Integer orderId; -->
 
-    <div class = "container">
-        <div class = "row">
-            <div class = "col-lg-6 col-md-6 col-sm-6 container justify-content-center card">
-                <h1 class = "text-center"> Create New Order</h1>
-                <div class = "card-body">
-                <form method = "POST" th:object="${orderform}" th:action="@{/order}">
-                    <!-- <div class = "form-group">
-                        <label>ID</label>
-                        <input type="text" name="orderId" th:field="*{orderId}" class = "form-control" placeholder = "ID required">
-                    </div> -->
-
-                    <div class = "form-group">
-                        <label>Customer name</label>
-                        <input type="text" name="customerName" th:field="*{customerName}" class = "form-control" placeholder = "Name required">
-                    </div>
-
-                    <div class = "form-group">
-                        <label>Address</label>
-                        <input type="text" name="shipAddress" th:field="*{shipAddress}" class = "form-control" placeholder = "Address required">
-                    </div>
-                    <div class = "form-group">
-                        <label>Tax</label>
-                        <input type="number" name="tax" th:field="*{tax}" class="form-control" placeholder="tax" step="0.01" min="0">
-                    </div>
-                    <div class = "form-group">
-                        <label>Notes</label>
-                        <input type="text" name="notes" th:field="*{notes}" class = "form-control" placeholder = "Write any comments">
-                    </div>
-
-                    <div class="form-group">
-                        <h4>Order Item 1</h4>
-                        <div>
-                            <label>Product</label>
-                            <input type="text" name="orderDetailsList[0].product" th:field="*{orderDetailsList[0].product}" class="form-control" placeholder="Write product details">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-6 col-md-6 col-sm-6 container justify-content-center card">
+                <h1 class="text-center">Create New Order</h1>
+                <div class="card-body">
+                    <form method="POST" th:object="${orderform}" th:action="@{/order}" id="orderForm">
+    
+                        <div class="form-group">
+                            <label>Customer name</label>
+                            <input type="text" name="customerName" th:field="*{customerName}" class="form-control" placeholder="Name required">
                         </div>
-                        <div>
-                            <label>Unit Price</label>
-                            <input type="number" name="orderDetailsList[0].unitPrice" th:field="*{orderDetailsList[0].unitPrice}" class="form-control" placeholder="Write product unit price" step="0.01" min="0">
+    
+                        <div class="form-group">
+                            <label>Address</label>
+                            <input type="text" name="shipAddress" th:field="*{shipAddress}" class="form-control" placeholder="Address required">
                         </div>
-                        <div>
-                            <label>Discount</label>
-                            <input type="number" name="orderDetailsList[0].discount" th:field="*{orderDetailsList[0].discount}" class="form-control" placeholder="Write product discount" step="0.01" min="0">
+    
+                        <div class="form-group">
+                            <label>Tax</label>
+                            <input type="number" name="tax" th:field="*{tax}" class="form-control" placeholder="Tax" step="0.01" min="0">
                         </div>
-                        <div>
-                            <label>Quantity</label>
-                            <input type="number" name="orderDetailsList[0].quantity" th:field="*{orderDetailsList[0].quantity}" class="form-control" placeholder="Write product quantity" step="0.01" min="0">
+    
+                        <div class="form-group">
+                            <label>Notes</label>
+                            <input type="text" name="notes" th:field="*{notes}" class="form-control" placeholder="Write any comments">
                         </div>
-                    </div>
-
-                    <!-- Order Item 2 -->
-                    <div class="form-group">
-                        <h4>Order Item 2</h4>
-                        <div>
-                            <label>Product</label>
-                            <input type="text" name="orderDetailsList[1].product" th:field="*{orderDetailsList[1].product}" class="form-control" placeholder="Write product details">
+    
+                        <div id="orderDetailsContainer">
+                            <!-- Initial Order Item -->
+                            <div class="form-group order-item" data-index="0">
+                                <h4>Order Item 1</h4>
+                                <div>
+                                    <label>Product</label>
+                                    <input type="text" name="orderDetailsList[0].product" th:field="*{orderDetailsList[0].product}" class="form-control" placeholder="Write product details">
+                                </div>
+                                <div>
+                                    <label>Unit Price</label>
+                                    <input type="number" name="orderDetailsList[0].unitPrice" th:field="*{orderDetailsList[0].unitPrice}" class="form-control" placeholder="Write product unit price" step="0.01" min="0">
+                                </div>
+                                <div>
+                                    <label>Discount</label>
+                                    <input type="number" name="orderDetailsList[0].discount" th:field="*{orderDetailsList[0].discount}" class="form-control" placeholder="Write product discount" step="0.01" min="0">
+                                </div>
+                                <div>
+                                    <label>Quantity</label>
+                                    <input type="number" name="orderDetailsList[0].quantity" th:field="*{orderDetailsList[0].quantity}" class="form-control" placeholder="Write product quantity" step="0.01" min="0">
+                                </div>
+                            </div>
                         </div>
-                        <div>
-                            <label>Unit Price</label>
-                            <input type="number" name="orderDetailsList[1].unitPrice" th:field="*{orderDetailsList[1].unitPrice}" class="form-control" placeholder="Write product unit price" step="0.01" min="0">
+    
+                        <button type="button" id="addOrderItem" class="btn btn-secondary">Add Item</button>
+    
+                        <br><br>
+    
+                        <div class="box-footer">
+                            <button type="submit" class="btn btn-primary">Create</button>
                         </div>
-                        <div>
-                            <label>Discount</label>
-                            <input type="number" name="orderDetailsList[1].discount" th:field="*{orderDetailsList[1].discount}" class="form-control" placeholder="Write product discount" step="0.01" min="0">
-                        </div>
-                        <div>
-                            <label>Quantity</label>
-                            <input type="number" name="orderDetailsList[1].quantity" th:field="*{orderDetailsList[1].quantity}" class="form-control" placeholder="Write product quantity" step="0.01" min="0">
-                        </div>
-                    </div>
-
-                    
-
-                    
-
-
-
-
-
-                    <br>
-        
-                    <div class = "box-footer">
-                        <button type="submit" class = "btn btn-primary">Create</button>
-                    </div>
-
-                </form>
+    
+                    </form>
                 </div>
             </div>
         </div>
     </div>
+    
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const orderDetailsContainer = document.getElementById("orderDetailsContainer");
+            const addOrderItemButton = document.getElementById("addOrderItem");
+    
+            addOrderItemButton.addEventListener("click", () => {
+                const orderItems = document.querySelectorAll(".order-item");
+                const newIndex = orderItems.length;
+    
+                const newOrderItem = document.createElement("div");
+                newOrderItem.classList.add("form-group", "order-item");
+                newOrderItem.setAttribute("data-index", newIndex);
+                newOrderItem.innerHTML = `
+                    <h4>Order Item ${newIndex + 1}</h4>
+                    <div>
+                        <label>Product</label>
+                        <input type="text" name="orderDetailsList[${newIndex}].product" class="form-control" placeholder="Write product details">
+                    </div>
+                    <div>
+                        <label>Unit Price</label>
+                        <input type="number" name="orderDetailsList[${newIndex}].unitPrice" class="form-control" placeholder="Write product unit price" step="0.01" min="0">
+                    </div>
+                    <div>
+                        <label>Discount</label>
+                        <input type="number" name="orderDetailsList[${newIndex}].discount" class="form-control" placeholder="Write product discount" step="0.01" min="0">
+                    </div>
+                    <div>
+                        <label>Quantity</label>
+                        <input type="number" name="orderDetailsList[${newIndex}].quantity" class="form-control" placeholder="Write product quantity" step="0.01" min="0">
+                    </div>
+                `;
+    
+                orderDetailsContainer.appendChild(newOrderItem);
+            });
+        });
+    </script>
     
     
 </body>
