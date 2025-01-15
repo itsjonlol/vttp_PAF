@@ -7,11 +7,11 @@ CREATE DATABASE ws24;
 -- Select the database
 USE ws24;
 
--- Create the orders table
+-- Create the order table
 CREATE TABLE orders (
     
     order_id int auto_increment,
-    order_date date,
+    order_date date default (current_date),
     customer_name varchar(128),
     ship_address varchar(128),
     notes text,
@@ -20,7 +20,7 @@ CREATE TABLE orders (
 
 );
 
-CREATE TABLE orders_details(
+CREATE TABLE orderdetails(
     
     details_id int auto_increment,
     product varchar(64),

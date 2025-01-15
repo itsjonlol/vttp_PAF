@@ -1,9 +1,9 @@
 package vttp_day24ws.vttp_day24ws.model;
 
-import java.util.Date;
+import java.sql.Date;
 import java.util.List;
 
-public class Orders {
+public class Order {
     private Integer orderId;
     private Date orderDate;
     private String customerName;
@@ -13,10 +13,12 @@ public class Orders {
     private List<OrderDetails> orderDetailsList;
     // private OrderDetails orderDetails;
     
-
-    public Orders() {
-
+    
+    public Order() {
+        this.orderDate = new Date(System.currentTimeMillis());
     }
+
+
 
     public Integer getOrderId() {
         return orderId;
@@ -85,6 +87,15 @@ public class Orders {
         this.orderDetailsList = orderDetailsList;
     }
 
+    @Override
+    public String toString() {
+        return "Order [orderId=" + orderId + ", orderDate=" + orderDate + ", customerName=" + customerName
+                + ", shipAddress=" + shipAddress + ", notes=" + notes + ", tax=" + tax + ", orderDetailsList="
+                + orderDetailsList + "]";
+    }
+
+    
+
     // public OrderDetails getOrderDetails() {
     //     return orderDetails;
     // }
@@ -92,6 +103,8 @@ public class Orders {
     // public void setOrderDetails(OrderDetails orderDetails) {
     //     this.orderDetails = orderDetails;
     // }
+
+    
 
     
 

@@ -3,27 +3,21 @@ package vttp_day24ws.vttp_day24ws.model;
 public class OrderDetails {
     
     private Integer detailsId;
-    private Integer product;
+    private String product;
     private Float unitPrice;
     private Float discount;
     private Integer quantity;
-    private Integer orderId;
     
 
     public OrderDetails() {
 
     }
     
-    public Integer getOrderId() {
-        return orderId;
-    }
-    public void setOrderId(Integer orderId) {
-        this.orderId = orderId;
-    }
-    public Integer getProduct() {
+    
+    public String getProduct() {
         return product;
     }
-    public void setProduct(Integer product) {
+    public void setProduct(String product) {
         this.product = product;
     }
     public Float getUnitPrice() {
