@@ -1,47 +1,104 @@
 package vttp.paf_day25l_producer.model;
 
+import java.sql.Date;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+
 public class Order {
-    private int id;
-    private String fullName;
-    private List<OrderDetails> lineItems;
+    private Integer orderId;
 
-    public Order() {
-
-    }
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    private Date orderDate;
+    private String customerName;
+    private String shipAddress;
+    private String notes;
+    private Float tax;
     
-
-    public Order(int id, String fullName, List<OrderDetails> lineItems) {
-        this.id = id;
-        this.fullName = fullName;
-        this.lineItems = lineItems;
+    private List<OrderDetails> orderDetailsList;
+    // private OrderDetails orderDetails;
+    public Order() {
+        
     }
 
 
-    public int getId() {
-        return id;
+
+    public Integer getOrderId() {
+        return orderId;
     }
 
-    public void setId(int id) {
-        this.id = id;
+
+    public void setOrderId(Integer orderId) {
+        this.orderId = orderId;
     }
 
-    public String getFullName() {
-        return fullName;
+
+    public Date getOrderDate() {
+        return orderDate;
     }
 
-    public void setFullName(String fullName) {
-        this.fullName = fullName;
+
+    public void setOrderDate(Date orderDate) {
+        this.orderDate = orderDate;
     }
 
-    public List<OrderDetails> getLineItems() {
-        return lineItems;
+
+    public String getCustomerName() {
+        return customerName;
     }
 
-    public void setLineItems(List<OrderDetails> lineItems) {
-        this.lineItems = lineItems;
+
+    public void setCustomerName(String customerName) {
+        this.customerName = customerName;
     }
+
+
+    public String getShipAddress() {
+        return shipAddress;
+    }
+
+
+    public void setShipAddress(String shipAddress) {
+        this.shipAddress = shipAddress;
+    }
+
+
+    public String getNotes() {
+        return notes;
+    }
+
+
+    public void setNotes(String notes) {
+        this.notes = notes;
+    }
+
+
+    public Float getTax() {
+        return tax;
+    }
+
+
+    public void setTax(Float tax) {
+        this.tax = tax;
+    }
+
+    public List<OrderDetails> getOrderDetailsList() {
+        return orderDetailsList;
+    }
+
+    public void setOrderDetailsList(List<OrderDetails> orderDetailsList) {
+        this.orderDetailsList = orderDetailsList;
+    }
+
+    // @Override
+    // public String toString() {
+    //     return "Order [orderId=" + orderId + ", orderDate=" + orderDate + ", customerName=" + customerName
+    //             + ", shipAddress=" + shipAddress + ", notes=" + notes + ", tax=" + tax + ", orderDetailsList="
+    //             + orderDetailsList + "]";
+    // }
+
 
     
 }

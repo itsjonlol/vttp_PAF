@@ -48,19 +48,25 @@ public class ConsumerService implements MessageListener {
         // orderJsonObject.remove("order_")
 
         // Extract existing values from the original orderJsonObject
-        long dateLong = orderJsonObject.getJsonNumber("orderDate").longValue();
+        // long dateLong = orderJsonObject.getJsonNumber("orderDate").longValue();
         // Date sqlDate = new Date(dateLong);
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
        
         JsonObjectBuilder builder = Json.createObjectBuilder();
 
         // Iterate over the original JsonObject and add each key-value pair
+        // orderJsonObject.forEach((key, value) -> {
+        //     if (key.equals("orderDate")) {
+        //         builder.add(key, sdf.format(dateLong));  // Add the formatted date
+        //     } else {
+        //         builder.add(key, value);  // Add other fields as is
+        //     }
+        // });
         orderJsonObject.forEach((key, value) -> {
-            if (key.equals("orderDate")) {
-                builder.add(key, sdf.format(dateLong));  // Add the formatted date
-            } else {
+           
+            
                 builder.add(key, value);  // Add other fields as is
-            }
+            
         });
 
         
@@ -113,7 +119,7 @@ public class ConsumerService implements MessageListener {
 
 
 
-        
+        //OR CAN orderData directly
         try {
             RequestEntity<String> requestEntity = RequestEntity.post(url)
                                                            .headers(headers)

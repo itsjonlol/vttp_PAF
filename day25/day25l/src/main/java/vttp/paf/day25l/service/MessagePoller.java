@@ -17,7 +17,7 @@ public class MessagePoller {
     public RedisTemplate<String,String> template;
 
     @Async
-    public void start() {
+    public void start() { //starts the worker threads. responsible for creating executor service and submit threadworker tasks to it
         ExecutorService executorService = Executors.newFixedThreadPool(2);
         executorService.submit(new ThreadWorker(template,"task 01"));
         executorService.submit(new ThreadWorker(template,"task 02"));

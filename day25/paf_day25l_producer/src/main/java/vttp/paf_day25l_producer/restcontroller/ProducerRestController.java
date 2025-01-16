@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import vttp.paf_day25l_producer.model.Order;
 import vttp.paf_day25l_producer.model.Todo;
 import vttp.paf_day25l_producer.service.ProducerService;
 
@@ -25,11 +26,11 @@ public class ProducerRestController {
         return ResponseEntity.status(200).header("Content-Type", "application/json").body(todo);
     }
     
-    @PostMapping("/publish")
-    public ResponseEntity<?> sendOrder(@RequestBody String entity) {
+    @PostMapping("/messages/publish")
+    public ResponseEntity<?> sendOrder(@RequestBody Order order) {
         //TODO: process POST request
-        // producerService.publish(order);
-        return ResponseEntity.status(200).header("Content-Type", "application/json").body("message sent");
+        producerService.publish(order);
+        return ResponseEntity.status(200).header("Content-Type", "application/json").body(order);
     }
     
 

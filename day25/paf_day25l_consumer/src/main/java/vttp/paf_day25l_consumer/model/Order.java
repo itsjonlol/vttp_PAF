@@ -3,17 +3,20 @@ package vttp.paf_day25l_consumer.model;
 import java.sql.Date;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-@JsonTypeInfo(use = JsonTypeInfo.Id.NONE)
+
 public class Order {
     private Integer orderId;
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private Date orderDate;
+
     private String customerName;
     private String shipAddress;
     private String notes;
     private Float tax;
-    @JsonProperty("orderDetailsList")
+   
     private List<OrderDetails> orderDetailsList;
     
     

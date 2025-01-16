@@ -11,6 +11,7 @@ import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.listener.ChannelTopic;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
+import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 import vttp.paf.day25l.service.SubscriberService;
@@ -18,88 +19,68 @@ import vttp.paf.day25l.service.SubscriberService;
 @Configuration
 public class RedisConfig {
     
-   
-
     @Value("${spring.data.redis.host}")
     private String redisHost;
 
     @Value("${spring.data.redis.port}")
-    private Integer redisPort;
+    private int redisPort;
 
     @Value("${spring.data.redis.username}")
-    private String redisUsername;
+    private String redisUserName;
 
     @Value("${spring.data.redis.password}")
     private String redisPassword;
 
     @Autowired
-    SubscriberService subscriberService;
+    SubscriberService subscriber;
 
     public RedisConnectionFactory createConnectionFactory() {
-        final RedisStandaloneConfiguration config = new RedisStandaloneConfiguration(redisHost,redisPort);
+        final RedisStandaloneConfiguration config = new RedisStandaloneConfiguration(redisHost, redisPort);
         config.setDatabase(0);
 
-        if (!redisUsername.equals("") && redisPassword.equals("")) {
-            config.setUsername(redisUsername);
+        if (!redisUserName.equals("") && redisPassword.equals("")) {
+            config.setUsername(redisUserName);
             config.setPassword(redisPassword);
-            
         }
+
         final JedisClientConfiguration jedisClient = JedisClientConfiguration.builder().build();
-        JedisConnectionFactory jedisConnectionFactory = new JedisConnectionFactory(config,jedisClient);
+        JedisConnectionFactory jedisConnectionFactory = new JedisConnectionFactory(config, jedisClient);
         jedisConnectionFactory.afterPropertiesSet();
 
         return jedisConnectionFactory;
-
     }
 
     @Bean("myredis")
-    public RedisTemplate<String, String> redisObjectTemplate01() {
+    public RedisTemplate<String, String> redisTemplate() {
         RedisConnectionFactory redisConnectionFactory = createConnectionFactory();
-        RedisTemplate<String, String> template = new RedisTemplate<>();
-        template.setConnectionFactory(redisConnectionFactory);
-        template.setKeySerializer(new StringRedisSerializer());
-        template.setValueSerializer(new StringRedisSerializer());
-        template.setHashKeySerializer(new StringRedisSerializer());
-        template.setHashValueSerializer(new StringRedisSerializer());
-        return template;
+        RedisTemplate<String, String> redisTemplate = new RedisTemplate<>();
+        redisTemplate.setConnectionFactory(redisConnectionFactory);
+        redisTemplate.setKeySerializer(new StringRedisSerializer());;
+        redisTemplate.setValueSerializer(new StringRedisSerializer());
+        redisTemplate.setHashKeySerializer(new StringRedisSerializer());
+        redisTemplate.setHashValueSerializer(new StringRedisSerializer());
+
+        return redisTemplate;
     }
 
     @Bean
     public RedisMessageListenerContainer createMessageListenerContainer() {
+
         RedisConnectionFactory redisConnectionFactory = createConnectionFactory();
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(redisConnectionFactory);
-        container.addMessageListener(subscriberService, ChannelTopic.of("mytopic"));
+        container.addMessageListener(listenerAdapter(subscriber), ChannelTopic.of("mytopic"));
+
         return container;
     }
 
 
-    // @Bean
-    // public JedisConnectionFactory jedisConnectionFactory() {
-    //     RedisStandaloneConfiguration rsc = new RedisStandaloneConfiguration();
-    //     rsc.setHostName(redisHost);
-    //     rsc.setPort(redisPort);
+    @Bean
+    public MessageListenerAdapter listenerAdapter(SubscriberService redisConsumerService) {
+        MessageListenerAdapter adapter = new MessageListenerAdapter(redisConsumerService);
+        // adapter.setSerializer(new Jackson2JsonRedisSerializer<>(String.class));
 
-    //     if(redisUsername.trim().length() > 0) {
-    //         rsc.setUsername(redisUsername);
-    //         rsc.setPassword(redisPassword);
-    //     }
+        return adapter;
+    }
 
-    //     JedisClientConfiguration jcc = JedisClientConfiguration.builder().build();
-    //     JedisConnectionFactory jcf = new JedisConnectionFactory(rsc, jcc);
-    //     jcf.afterPropertiesSet();
-
-    //     return jcf;
-    // }
-
-    // @Bean(ConstantVar.template01)
-    // public RedisTemplate<String, String> redisObjectTemplate01() {
-    //     RedisTemplate<String, String> template = new RedisTemplate<>();
-    //     template.setConnectionFactory(jedisConnectionFactory());
-    //     template.setKeySerializer(new StringRedisSerializer());
-    //     template.setValueSerializer(new StringRedisSerializer());
-    //     template.setHashKeySerializer(new StringRedisSerializer());
-    //     template.setHashValueSerializer(new StringRedisSerializer());
-    //     return template;
-    // }
 }

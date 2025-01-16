@@ -16,12 +16,14 @@ public class ProducerService {
     @Autowired @Qualifier("todo")
     RedisTemplate<String,Todo> redisTemplate;
 
-    @Autowired
+    @Autowired @Qualifier("order")
     RedisTemplate<String,Order> redisTemplate2;
 
     @Value("${redis.topic1}")
     private String topic1;
 
+    @Value("${redis.topic3}")
+    private String topic3;
     @Autowired
     ChannelTopic channelTopic;
 
@@ -30,6 +32,9 @@ public class ProducerService {
     }
 
     public Long publish(Order order) {
-        return redisTemplate2.convertAndSend(channelTopic.getTopic(), order);
+        return redisTemplate2.convertAndSend(topic3, order);
     }
+    // public Long publish(Order order) {
+    //     return redisTemplate2.convertAndSend(channelTopic.getTopic(), order);
+    // }
 }
