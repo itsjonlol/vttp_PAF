@@ -2,6 +2,7 @@ package vttp.paf_day25l_consumer.service;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.text.SimpleDateFormat;
 import java.util.Collections;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,8 +19,6 @@ import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import jakarta.json.Json;
-import jakarta.json.JsonArray;
-import jakarta.json.JsonArrayBuilder;
 import jakarta.json.JsonObject;
 import jakarta.json.JsonObjectBuilder;
 import jakarta.json.JsonReader;
@@ -32,19 +31,13 @@ public class ConsumerService implements MessageListener {
     @Qualifier("order")
     private RedisTemplate<String, Order> template;
     
-    //handle Todo object directly -> automap
-    // public void handleMessage(Todo todo) {
-        
-        
-    // }
+  
     
-    
-
-    //manually parset the json-string
+    //manually parse the json-string
     @Override
     public void onMessage(Message message, byte[] pattern) {
         RestTemplate restTemplate = new RestTemplate();
-        System.out.println("consumer hit lol");
+       
         String orderData = new String(message.getBody());
         
         System.out.println(orderData);
@@ -52,58 +45,63 @@ public class ConsumerService implements MessageListener {
         InputStream is = new ByteArrayInputStream(orderData.getBytes());
         JsonReader reader = Json.createReader(is);
         JsonObject orderJsonObject = reader.readObject();
-
-        String newOrderDate = "2025-01-01";
+        // orderJsonObject.remove("order_")
 
         // Extract existing values from the original orderJsonObject
-        String customerName = orderJsonObject.getString("customerName");
-        String shipAddress = orderJsonObject.getString("shipAddress");
-        String notes = orderJsonObject.getString("notes");
-        Double tax = orderJsonObject.getJsonNumber("tax").doubleValue();
-        JsonArray orderDetailsList = orderJsonObject.getJsonArray("orderDetailsList"); // Get the original orderDetailsList
-        System.out.println(orderDetailsList.size());
-        JsonArrayBuilder updatedOrderDetailsList = Json.createArrayBuilder();
+        long dateLong = orderJsonObject.getJsonNumber("orderDate").longValue();
+        // Date sqlDate = new Date(dateLong);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+       
+        JsonObjectBuilder builder = Json.createObjectBuilder();
 
-        // Iterate over the original orderDetailsList to create a new list using the index-based loop
-        for (int i = 0; i < orderDetailsList.size(); i++) {
+        // Iterate over the original JsonObject and add each key-value pair
+        orderJsonObject.forEach((key, value) -> {
+            if (key.equals("orderDate")) {
+                builder.add(key, sdf.format(dateLong));  // Add the formatted date
+            } else {
+                builder.add(key, value);  // Add other fields as is
+            }
+        });
+
+        
+        JsonObject updatedJsonObject = builder.build();
+
+        //inefficient method
+//         String customerName = orderJsonObject.get    String("customerName");
+//         String shipAddress = orderJsonObject.getString("shipAddress");
+//         String notes = orderJsonObject.getString("notes");
+//         Double tax = orderJsonObject.getJsonNumber("tax").doubleValue();
+//         JsonArray orderDetailsList = orderJsonObject.getJsonArray("orderDetailsList"); // Get the original orderDetailsList
+//         System.out.println(orderDetailsList.size());
+//         JsonArrayBuilder updatedOrderDetailsList = Json.createArrayBuilder();
+
+//         // Iterate over the original orderDetailsList to create a new list using the index-based loop
+//         for (int i = 0; i < orderDetailsList.size(); i++) {
 
       
-            JsonObject orderDetails = orderDetailsList.getJsonObject(i); // Get each orderDetails object
+//             JsonObject orderDetails = orderDetailsList.getJsonObject(i); // Get each orderDetails object
             
-            JsonObjectBuilder orderDetailsBuilder = Json.createObjectBuilder();
+//             JsonObjectBuilder orderDetailsBuilder = Json.createObjectBuilder();
             
-            // Copy fields from the original orderDetails object, or modify them if needed
-            orderDetailsBuilder.add("product", orderDetails.getString("product"))
-                               .add("unitPrice", orderDetails.getJsonNumber("unitPrice"))
-                               .add("discount", orderDetails.getJsonNumber("discount"))
-                               .add("quantity", orderDetails.getInt("quantity"));
+//             // Copy fields from the original orderDetails object, or modify them if needed
+//             orderDetailsBuilder.add("product", orderDetails.getString("product"))
+//                                .add("unitPrice", orderDetails.getJsonNumber("unitPrice"))
+//                                .add("discount", orderDetails.getJsonNumber("discount"))
+//                                .add("quantity", orderDetails.getInt("quantity"));
         
-            // Add the modified orderDetails object to the array
-            updatedOrderDetailsList.add(orderDetailsBuilder.build());
-        }
+//             // Add the modified orderDetails object to the array
+//             updatedOrderDetailsList.add(orderDetailsBuilder.build());
+//         }
 
-// Rebuild the JsonObject with the new orderDate and the modified orderDetailsList
-JsonObject updatedOrderJsonObject = Json.createObjectBuilder()
-    .add("orderDate", newOrderDate) // Adding the new orderDate
-    .add("customerName", customerName)
-    .add("shipAddress", shipAddress)
-    .add("notes", notes)
-    .add("tax", tax)
-    .add("orderDetailsList", updatedOrderDetailsList.build()) // Updated orderDetailsList
-    .build();
-        
-        JsonObject orderJson1 = Json.createObjectBuilder()
-                .add("customerName",orderJsonObject.getString("customerName"))
-                .add("shipAddress", "address")
-                .add("notes", "string")
-                .add("tax", 0.1)
-                .add("orderDetailsList", orderDetailsList)
-                .build();
-       
-
-
-
-// 
+// // Rebuild the JsonObject with the new orderDate and the modified orderDetailsList
+// JsonObject updatedOrderJsonObject = Json.createObjectBuilder()
+//     .add("orderDate", sdf.format(dateLong)) // Adding the new orderDate
+//     .add("customerName", customerName)
+//     .add("shipAddress", shipAddress)
+//     .add("notes", notes)
+//     .add("tax", tax)
+//     .add("orderDetailsList", updatedOrderDetailsList.build()) // Updated orderDetailsList
+//     .build();
 
         //     using Json-P to map it back to object
         //     call the API in day 24 using RestTemplate to write to MySQL database
@@ -114,40 +112,12 @@ JsonObject updatedOrderJsonObject = Json.createObjectBuilder()
         headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
 
 
-        JsonObject orderDetail1 = Json.createObjectBuilder()
-                .add("product", "string")
-                .add("discount", 0.1)
-                .add("quantity", 1073741824)
-                .build();
-
-        JsonObject orderDetail2 = Json.createObjectBuilder()
-                .add("product", "string2")
-                .add("unitPrice", 0.1)
-                .add("discount", 0.1)
-                .add("quantity", 1073741824)
-                .build();
-
-        // Create the "orderDetailsList" array
-        JsonArray orderDetailsList2 = Json.createArrayBuilder()
-                .add(orderDetail1)
-                .add(orderDetail2)
-                .build();
-
-        // Create the main JSON object
-        JsonObject orderJson = Json.createObjectBuilder()
-              
-                .add("customerName", "consumer")
-                .add("shipAddress", "address")
-                .add("notes", "string")
-                .add("tax", 0.1)
-                .add("orderDetailsList", orderDetailsList2)
-                .build();
 
         
         try {
             RequestEntity<String> requestEntity = RequestEntity.post(url)
                                                            .headers(headers)
-                                                           .body(updatedOrderJsonObject.toString());
+                                                           .body(updatedJsonObject.toString());
             ResponseEntity<String> responseResult = restTemplate.exchange(requestEntity,String.class);
             System.out.println(responseResult.getBody());
             

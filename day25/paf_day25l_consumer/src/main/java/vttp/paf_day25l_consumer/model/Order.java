@@ -1,17 +1,19 @@
 package vttp.paf_day25l_consumer.model;
 
+import java.sql.Date;
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-@JsonIgnoreProperties(ignoreUnknown = true)
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+@JsonTypeInfo(use = JsonTypeInfo.Id.NONE)
 public class Order {
     private Integer orderId;
-    // private Date orderDate;
+    private Date orderDate;
     private String customerName;
     private String shipAddress;
     private String notes;
     private Float tax;
-    
+    @JsonProperty("orderDetailsList")
     private List<OrderDetails> orderDetailsList;
     
     
@@ -31,14 +33,14 @@ public class Order {
     }
 
 
-    // public Date getOrderDate() {
-    //     return orderDate;
-    // }
+    public Date getOrderDate() {
+        return orderDate;
+    }
 
 
-    // public void setOrderDate(Date orderDate) {
-    //     this.orderDate = orderDate;
-    // }
+    public void setOrderDate(Date orderDate) {
+        this.orderDate = orderDate;
+    }
 
 
     public String getCustomerName() {
