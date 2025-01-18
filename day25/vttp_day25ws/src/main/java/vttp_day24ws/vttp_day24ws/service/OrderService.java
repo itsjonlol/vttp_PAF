@@ -1,35 +1,38 @@
-package vttp_paf_day24l.vttp_paf_day24l.service;
+package vttp_day24ws.vttp_day24ws.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import vttp_paf_day24l.vttp_paf_day24l.model.Reservation;
-import vttp_paf_day24l.vttp_paf_day24l.model.ReservationDetail;
-import vttp_paf_day24l.vttp_paf_day24l.repo.ReservationRepo;
+import vttp_day24ws.vttp_day24ws.model.Order;
+import vttp_day24ws.vttp_day24ws.repo.OrderRepo;
 
 @Service
-public class ReservationService {
-
+public class OrderService {
+    
     @Autowired
-    ReservationRepo reservationRepo;
+    OrderRepo orderRepo;
 
     @Transactional
-    public boolean createReservationRecord(Reservation reservation, ReservationDetail reservationDetail) {
+    public boolean createOrderRecord(Order order) {
 
         Boolean bCreated = false;
-        // start transaction
-        // already in transaction based on the @Transactional annotation.
+      
 
         // create the reservation record
-        int iReservationId = reservationRepo.createReservation(reservation);
+        int iOrderId = orderRepo.createOrder(order);
+        orderRepo.createOrderDetails(order,iOrderId);
+            
+        
+       
 
         // uncomment to simulate error
         // throw new IllegalArgumentException("Simulate error after creating Reservation...");
 
         // created the reservation detail record
-        reservationDetail.getReservation().setId(iReservationId);
-        reservationRepo.createReservationDetails(reservationDetail);
+        
+        // reservationDetail.getReservation().setId(iReservationId);
+        // reservationRepo.createReservationDetails(reservationDetail);
 
         // uncomment to simulate error
         // throw new IllegalArgumentException("Simulate error after creating ReservationDetails...");
@@ -40,5 +43,6 @@ public class ReservationService {
 
         return bCreated;
     }
+
     
 }

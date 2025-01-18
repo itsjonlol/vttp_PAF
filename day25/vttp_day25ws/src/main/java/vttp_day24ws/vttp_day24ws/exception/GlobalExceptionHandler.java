@@ -1,4 +1,4 @@
-package vttp_paf_day24l.vttp_paf_day24l.exception;
+package vttp_day24ws.vttp_day24ws.exception;
 
 import java.util.Date;
 
@@ -9,9 +9,8 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import vttp_paf_day24l.vttp_paf_day24l.model.exception.AccountNotFoundException;
-import vttp_paf_day24l.vttp_paf_day24l.model.exception.ErrorMessage;
-import vttp_paf_day24l.vttp_paf_day24l.model.exception.InsufficientBalanceException;
+import vttp_day24ws.vttp_day24ws.model.exceptions.ErrorMessage;
+import vttp_day24ws.vttp_day24ws.model.exceptions.InsertionException;
 
 @RestControllerAdvice  // to intercept. middleware
 public class GlobalExceptionHandler {
@@ -20,32 +19,24 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class) 
     public ResponseEntity<ErrorMessage> handleException(Exception ex,
     HttpServletRequest request, HttpServletResponse response) {
-        ErrorMessage errorMessage = new ErrorMessage(response.getStatus(),
+        ErrorMessage errorMessage = new ErrorMessage(500,
         ex.getMessage(),new Date(), request.getRequestURI());
 
         return new ResponseEntity<>(errorMessage,HttpStatus.INTERNAL_SERVER_ERROR);
 
     }
 
-    @ExceptionHandler(AccountNotFoundException.class) 
+    @ExceptionHandler(InsertionException.class) 
     public ResponseEntity<ErrorMessage> handleAccountNotFoundException(Exception ex,
     HttpServletRequest request, HttpServletResponse response) {
-        ErrorMessage errorMessage = new ErrorMessage(HttpStatus.NOT_FOUND.value(),
-        ex.getMessage(),new Date(), request.getRequestURI());
-
-        return new ResponseEntity<>(errorMessage,HttpStatus.NOT_FOUND);
-
-    }
-
-    @ExceptionHandler(InsufficientBalanceException.class) 
-    public ResponseEntity<ErrorMessage> handleInsufficientBalanceException(Exception ex,
-    HttpServletRequest request, HttpServletResponse response) {
-        ErrorMessage errorMessage = new ErrorMessage(HttpStatus.BAD_REQUEST.value(),
+        ErrorMessage errorMessage = new ErrorMessage(400,
         ex.getMessage(),new Date(), request.getRequestURI());
 
         return new ResponseEntity<>(errorMessage,HttpStatus.BAD_REQUEST);
 
     }
+
+   
 
 
  

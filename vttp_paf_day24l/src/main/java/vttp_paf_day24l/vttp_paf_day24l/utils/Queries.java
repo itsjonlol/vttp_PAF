@@ -31,15 +31,15 @@ public class Queries {
 
     public static final String SQL_CREATE_BOOK = """
                     
-            insert into book (title,quantity) values (?,?)
+            insert into Book (title,quantity) values (?,?)
                     """;
-    public static final String SQL_GET_BOOKS = "select * from book";
+    public static final String SQL_GET_BOOKS = "select * from Book";
 
-    public static final String SQL_GET_BOOKS_BY_ID = "select * from book where id = ?";
+    public static final String SQL_GET_BOOKS_BY_ID = "select * from Book where id = ?";
 
-    public static final String SQL_UPDATE_BOOK_BY_ID = "update book set title = ?, quantity = ? where id = ?";
+    public static final String SQL_UPDATE_BOOK_BY_ID = "update Book set title = ?, quantity = ? where id = ?";
 
-    public static final String SQL_UPDATE_BOOK_STATUS_BY_ID = "update book set isActive = ? where id = ?";
+    public static final String SQL_UPDATE_BOOK_STATUS_BY_ID = "update Book set is_active = ? where id = ?";
 
     public static final String SQL_INSERT_RESERVATION = """
                     
@@ -47,7 +47,7 @@ public class Queries {
                     """;
 
     public static final String SQL_RESERVATION_DETAIL = """
-                    insert into ReservationDetail(book_id,reservation_id)
+                    insert into ReservationDetail(book_id,reservation_id) values (?,?)
                     """;
 
 }

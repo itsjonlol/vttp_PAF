@@ -4,6 +4,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
+import javax.management.Query;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCreator;
@@ -12,7 +14,10 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 import vttp_paf_day24l.vttp_paf_day24l.model.Reservation;
+import vttp_paf_day24l.vttp_paf_day24l.model.ReservationDetail;
+
 import static vttp_paf_day24l.vttp_paf_day24l.utils.Queries.SQL_INSERT_RESERVATION;
+import static vttp_paf_day24l.vttp_paf_day24l.utils.Queries.SQL_RESERVATION_DETAIL;
 @Repository
 public class ReservationRepo {
 
@@ -44,7 +49,11 @@ public class ReservationRepo {
         return iReservationId;
     }
 
-    // public Boolean createReservationDetails(ReservationDetail reservationDetail) {
-    //     int iPdated = template.update
-    // }
+    public Boolean createReservationDetails(ReservationDetail reservationDetail) {
+
+        int iUpdated = template.update(SQL_RESERVATION_DETAIL, reservationDetail.getBook().getId(), reservationDetail.getReservation().getId());
+
+        return iUpdated>0;
+        
+    }
 }   

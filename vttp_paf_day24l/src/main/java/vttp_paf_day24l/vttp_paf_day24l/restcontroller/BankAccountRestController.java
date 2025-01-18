@@ -1,12 +1,14 @@
 package vttp_paf_day24l.vttp_paf_day24l.restcontroller;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -39,8 +41,10 @@ public class BankAccountRestController {
     public ResponseEntity<?> transferFund(@PathVariable("account-from") Integer accountFromId,
     @PathVariable("account-to") Integer accountToId, @PathVariable("transfer-amount") Float amount) {
         //TODO: process POST request
-        Boolean bTransferred = bankAccountService.transfer(accountToId, accountToId,amount);
-        return ResponseEntity.ok().body(bTransferred);
+        Boolean bTransferred = bankAccountService.transfer(accountFromId, accountToId,amount);
+        Map<String,String> message = new HashMap<>();
+        message.put("message", "success");
+        return ResponseEntity.ok().header("Content-Type", "application/json").body(bTransferred);
     }
     
 

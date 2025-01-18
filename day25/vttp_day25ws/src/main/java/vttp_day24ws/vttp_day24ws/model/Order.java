@@ -1,28 +1,21 @@
-package vttp.paf_day25l_producer.model;
+package vttp_day24ws.vttp_day24ws.model;
 
 import java.sql.Date;
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-
 public class Order {
     private Integer orderId;
-
-    
-    @JsonFormat(pattern = "yyyy-MM-dd")
     private Date orderDate;
     private String customerName;
     private String shipAddress;
     private String notes;
     private Float tax;
-    
     private List<OrderDetails> orderDetailsList;
     // private OrderDetails orderDetails;
+    
+    
     public Order() {
-        
+        this.orderDate = new Date(System.currentTimeMillis());
     }
 
 
@@ -94,13 +87,27 @@ public class Order {
         this.orderDetailsList = orderDetailsList;
     }
 
-    // @Override
-    // public String toString() {
-    //     return "Order [orderId=" + orderId + ", orderDate=" + orderDate + ", customerName=" + customerName
-    //             + ", shipAddress=" + shipAddress + ", notes=" + notes + ", tax=" + tax + ", orderDetailsList="
-    //             + orderDetailsList + "]";
-    // }
-
+    @Override
+    public String toString() {
+        return "Order [orderId=" + orderId + ", orderDate=" + orderDate + ", customerName=" + customerName
+                + ", shipAddress=" + shipAddress + ", notes=" + notes + ", tax=" + tax + ", orderDetailsList="
+                + orderDetailsList + "]";
+    }
 
     
+
+    // public OrderDetails getOrderDetails() {
+    //     return orderDetails;
+    // }
+
+    // public void setOrderDetails(OrderDetails orderDetails) {
+    //     this.orderDetails = orderDetails;
+    // }
+
+    
+
+    
+
+    
+
 }

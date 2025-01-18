@@ -46,6 +46,7 @@ public class BankAccountService {
         //check transferrer has sufficient balance to transfer the transfer amount
 
     }
+    
 
     private Boolean checkAccountActive(BankAccount account) {
         if (account.getIsActive().equals(true)) {
@@ -63,5 +64,7 @@ public class BankAccountService {
 
 
     }
+
+    
     
 }

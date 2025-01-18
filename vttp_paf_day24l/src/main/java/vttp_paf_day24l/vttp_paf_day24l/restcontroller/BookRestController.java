@@ -23,21 +23,26 @@ public class BookRestController {
 
     @GetMapping("")
     public ResponseEntity<?> getBooks() {
-        return ResponseEntity.ok().body(bookRepo.getAllBooks());
+        return ResponseEntity.ok().header("Content-Type", "application/json").body(bookRepo.getAllBooks());
+    }
+
+    @GetMapping("/{book-id}")
+    public ResponseEntity<?> getBookById(@PathVariable("book-id") Integer bookId) {
+        return ResponseEntity.ok().header("Content-Type", "application/json").body(bookRepo.getBookById(bookId));
     }
 
     @PostMapping("")
     public ResponseEntity<Boolean> createBook(@RequestBody Book book) {
         Boolean bCreated = bookRepo.insertBook(book);
         
-        return ResponseEntity.ok().body(bCreated);
+        return ResponseEntity.ok().header("Content-Type", "application/json").body(bCreated);
     }
     
     @PutMapping("/{id}")
     public ResponseEntity<Boolean> updateBook(@PathVariable("id") Integer id, @RequestBody Book book) {
-        Boolean bUpdated = bookRepo.updateBook(book);
+        Boolean bUpdated = bookRepo.updateBook(book,id);
         
-        return ResponseEntity.ok().body(bUpdated);
+        return ResponseEntity.ok().header("Content-Type", "application/json").body(bUpdated);
     }
     
     @PutMapping("/status/{id}")
@@ -45,7 +50,7 @@ public class BookRestController {
         Boolean bUpdated = bookRepo.updateBookStatus
         (book);
         
-        return ResponseEntity.ok().body(bUpdated);
+        return ResponseEntity.ok().header("Content-Type", "application/json").body(bUpdated);
     }
     
     
