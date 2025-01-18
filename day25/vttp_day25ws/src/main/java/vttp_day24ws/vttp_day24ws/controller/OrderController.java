@@ -2,6 +2,7 @@ package vttp_day24ws.vttp_day24ws.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Controller;
@@ -11,9 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 import vttp_day24ws.vttp_day24ws.model.Order;
-import vttp_day24ws.vttp_day24ws.repo.OrderRepo;
 import vttp_day24ws.vttp_day24ws.repo.RedisRepo;
-import vttp_day24ws.vttp_day24ws.service.AppNameService;
 import vttp_day24ws.vttp_day24ws.service.OrderService;
 
 
@@ -27,8 +26,10 @@ public class OrderController {
     @Autowired
     RedisRepo redisRepo;
 
-    @Autowired
-    AppNameService appNameService;
+    // @Autowired
+    // AppNameService appNameService;
+    @Value("${app.name}")  // Default topic if not provided
+    private String redisTopic;
 
     @GetMapping("/")
     public ModelAndView getForm() {
@@ -48,7 +49,7 @@ public class OrderController {
         ModelAndView mav = new ModelAndView("postorderform");
         try {
             // orderService.createOrderRecord(order);
-            redisRepo.pushToRepo(appNameService.getAppName(),order);
+            redisRepo.pushToRepo(redisTopic,order);
             mav.setStatus(HttpStatus.OK);
         } catch (Exception ex) {
             mav.addObject("errorMessage",ex.getMessage());

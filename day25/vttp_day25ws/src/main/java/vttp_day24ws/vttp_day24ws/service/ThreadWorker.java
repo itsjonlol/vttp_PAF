@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.ListOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 
@@ -19,7 +20,10 @@ public class ThreadWorker implements Runnable {
     @Autowired
     ObjectMapper objectMapper;
 
-    String appName;
+    @Value("${app.name}")  // Default topic if not provided
+    private String appName;
+
+    
 
     public ThreadWorker(RedisTemplate<String, String> template, String appName) {
         this.template = template;

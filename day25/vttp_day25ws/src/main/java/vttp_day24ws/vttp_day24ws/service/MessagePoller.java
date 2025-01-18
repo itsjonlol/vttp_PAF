@@ -17,13 +17,16 @@ public class MessagePoller {
     @Qualifier("myredis")
     public RedisTemplate<String, String> template;
 
-    @Autowired
-    AppNameService appNameService;
+    // @Autowired
+    // AppNameService appNameService;
+
+    @Value("${app.name}")  // Default topic if not provided
+    private String redisTopic;
 
     @Async
     public void start() {
         ExecutorService executorService = Executors.newFixedThreadPool(1);
-        executorService.submit(new ThreadWorker(template, appNameService.getAppName()));
+        executorService.submit(new ThreadWorker(template,redisTopic));
         
     }
 }
