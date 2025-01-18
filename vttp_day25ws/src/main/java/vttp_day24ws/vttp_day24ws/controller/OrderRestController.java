@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -12,7 +13,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import vttp_day24ws.vttp_day24ws.model.Order;
 import vttp_day24ws.vttp_day24ws.repo.RedisRepo;
-import vttp_day24ws.vttp_day24ws.service.AppNameService;
 import vttp_day24ws.vttp_day24ws.service.OrderService;
 
 
@@ -26,8 +26,11 @@ public class OrderRestController {
     @Autowired
     RedisRepo redisRepo;
 
-    @Autowired
-    AppNameService appNameService;
+    // @Autowired
+    // AppNameService appNameService;
+
+    @Value("${app.name}")  // Default topic if not provided
+    private String redisTopic;
 
     // @PostMapping("/order")
     // public ResponseEntity<?> postOrder(@RequestBody Order order) {
@@ -51,7 +54,7 @@ public class OrderRestController {
             //all other exceptions are caught in the format also. not just your custom exceptions
 
             // orderService.createOrderRecord(order);
-            redisRepo.pushToRepo(appNameService.getAppName(),order);
+            redisRepo.pushToRepo(redisTopic,order);
             Map<String,String> message = new HashMap<>();
             message.put("message", "Order posted successfully");
             return ResponseEntity.status(200).header("Content-Type", "application/json").body(message);

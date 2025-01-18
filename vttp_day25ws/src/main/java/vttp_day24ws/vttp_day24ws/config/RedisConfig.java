@@ -15,7 +15,6 @@ import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
-import vttp_day24ws.vttp_day24ws.service.AppNameService;
 import vttp_day24ws.vttp_day24ws.service.SubscriberService;
 
 @Configuration
@@ -32,12 +31,17 @@ public class RedisConfig {
 
     @Value("${spring.data.redis.password}")
     private String redisPassword;
+    @Value("${app.name}")  // Default topic if not provided
+    private String redisTopic;
+
 
     @Autowired
     SubscriberService subscriber;
-    @Autowired
-    AppNameService appNameService;
+    // @Autowired
+    // AppNameService appNameService;
 
+
+    
     public RedisConnectionFactory createConnectionFactory() {
         final RedisStandaloneConfiguration config = new RedisStandaloneConfiguration(redisHost, redisPort);
         config.setDatabase(0);
@@ -69,11 +73,11 @@ public class RedisConfig {
 
     @Bean
     public RedisMessageListenerContainer createMessageListenerContainer() {
-        String appName = appNameService.getAppName();
+       
         RedisConnectionFactory redisConnectionFactory = createConnectionFactory();
         RedisMessageListenerContainer container = new RedisMessageListenerContainer();
         container.setConnectionFactory(redisConnectionFactory);
-        container.addMessageListener(listenerAdapter(subscriber), ChannelTopic.of("acme"));
+        container.addMessageListener(listenerAdapter(subscriber), ChannelTopic.of(redisTopic));
 
         return container;
     }

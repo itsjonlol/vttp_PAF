@@ -5,13 +5,11 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.ListOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-
-import vttp_day24ws.vttp_day24ws.model.Order;
 
 public class ThreadWorker implements Runnable {
 
@@ -22,7 +20,10 @@ public class ThreadWorker implements Runnable {
     @Autowired
     ObjectMapper objectMapper;
 
-    String appName;
+    @Value("${app.name}")  // Default topic if not provided
+    private String appName;
+
+    
 
     public ThreadWorker(RedisTemplate<String, String> template, String appName) {
         this.template = template;
@@ -39,7 +40,8 @@ public class ThreadWorker implements Runnable {
         while (true) {
             try {
                 System.out.println("Queuing..." + appName);
-                Optional<String> option = Optional.ofNullable(listOps.rightPop(appName, Duration.ofSeconds(30)));
+                Optional<String> option = Optional.ofNullable(listOps.rightPop(appName, Duration.ofSeconds(100)));
+                
                 if (option.isEmpty()) {
                     continue;
                 }

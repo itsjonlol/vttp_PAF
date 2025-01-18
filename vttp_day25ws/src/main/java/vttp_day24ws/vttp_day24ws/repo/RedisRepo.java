@@ -24,7 +24,11 @@ public class RedisRepo {
     public void pushToRepo(String appName,Order order) {
 
         try {
+            
+            // System.out.println(OrderJsonFormatter.pojoToJson(order));
             template.opsForList().rightPush(appName, objectMapper.writeValueAsString(order));
+            // template.opsForList().rightPush(appName, OrderJsonFormatter.pojoToJson(order)); // if not automapping
+
         } catch (JsonProcessingException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();

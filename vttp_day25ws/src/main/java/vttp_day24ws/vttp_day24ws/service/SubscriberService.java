@@ -34,6 +34,7 @@ public class SubscriberService implements MessageListener {
 
         String orderData = new String(message.getBody());
         System.out.println(orderData);
+        System.out.println("onmessage");
         try {
             Order order = objectMapper.readValue(orderData, Order.class);
 
