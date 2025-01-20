@@ -1,6 +1,6 @@
 package vttp.day23ws.model;
 
-import java.util.Date;
+import java.sql.Date;
 
 public class Details {
     

@@ -3,7 +3,7 @@ package vttp.day23ws.repo;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.sql.Date;
 
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 
@@ -22,8 +22,10 @@ public class Utils {
         // LocalDate orderLocalDate = rs.getTimestamp("order_date");
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm");
         try {
-            Date orderDate = sdf.parse(orderDateString);
-            details.setOrderDate(orderDate);
+            java.util.Date orderDate = sdf.parse(orderDateString);
+            details.setOrderDate(new Date(orderDate.getTime()));
+            // Date orderDate = sdf.parse(orderDateString);
+            // details.setOrderDate(orderDate);
 
         } catch (ParseException ex) {
            System.out.println(ex.getMessage());
