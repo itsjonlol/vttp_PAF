@@ -23,11 +23,11 @@ public class RSVPService {
         return rsvpRepo.getRSVPByEmail(email);
         
     }
-    public void addRSVP(RSVP rsvp) {
-        rsvpRepo.addRSVP(rsvp);
+    public Boolean addRSVP(RSVP rsvp) {
+        return rsvpRepo.addRSVP(rsvp);
     }
-    public void updateRSVP(RSVP rsvp,Integer rsvp_id) {
-        rsvpRepo.updateRSVP(rsvp,rsvp_id);
+    public Boolean updateRSVP(RSVP rsvp,Integer rsvp_id) {
+        return rsvpRepo.updateRSVP(rsvp,rsvp_id);
     }
 
     public Integer countRSVP() {

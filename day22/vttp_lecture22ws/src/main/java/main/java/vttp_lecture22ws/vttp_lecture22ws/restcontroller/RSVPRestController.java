@@ -2,9 +2,9 @@ package main.java.vttp_lecture22ws.vttp_lecture22ws.restcontroller;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.sql.Date;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -55,12 +55,13 @@ public class RSVPRestController {
         return ResponseEntity.status(200).header("Content-Type", "application/json").body(optRSVP.get());
     }
 
-    @PostMapping("/rsvp")
+    @PostMapping("m1/rsvp")
     public ResponseEntity<?> addRSVP(@RequestBody String rsvpString) throws ParseException {
         InputStream is = new ByteArrayInputStream(rsvpString.getBytes());
         JsonReader reader = Json.createReader(is);
         JsonObject rsvpJsonObject = reader.readObject();
         String requestedEmail = rsvpJsonObject.getString("email");
+        
         
 
         RSVP rsvp = new RSVP();
@@ -68,8 +69,18 @@ public class RSVPRestController {
         rsvp.setEmail(requestedEmail);
         rsvp.setPhone(rsvpJsonObject.getString("phone"));
         rsvp.setComments(rsvpJsonObject.getString("comments"));
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        Date rsvpDate = sdf.parse(rsvpJsonObject.getString("confirmDate"));
+        
+
+        String stringDate = rsvpJsonObject.getString("confirmDate");
+
+        // SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        //convert util.date to sql date
+        // java.util.Date rsvpDateUtil = sdf.parse(rsvpJsonObject.getString("confirmDate"));
+        // Date rsvpDate = new Date(rsvpDateUtil.getTime());
+        //convert string to sql date
+        Date rsvpDate = Date.valueOf(stringDate);
+        
+        
         rsvp.setConfirmDate(rsvpDate);
   
 
@@ -83,8 +94,25 @@ public class RSVPRestController {
         successMessage.put("SuccessMessage","Operation successful");
         return ResponseEntity.status(HttpStatus.CREATED).header("Content-Type", "application/json").body(successMessage);
     }
+
+    @PostMapping("/rsvp")
+    public ResponseEntity<?> addRSV2(@RequestBody RSVP rsvp) throws ParseException {
+       
+        String requestedEmail = rsvp.getEmail();
+  
+
+        Optional<RSVP> optRSVP = rsvpService.getRSVPByEmail(requestedEmail);
+        if (!optRSVP.isEmpty()) {
+            rsvpService.updateRSVP(rsvp, optRSVP.get().getRsvp_id());
+        } else {
+            rsvpService.addRSVP(rsvp);
+        }
+        Map<String,String> successMessage = new HashMap<>();
+        successMessage.put("SuccessMessage","Operation successful");
+        return ResponseEntity.status(HttpStatus.CREATED).header("Content-Type", "application/json").body(successMessage);
+    }
     
-    @PutMapping("/rsvp/{rsvpemail}") 
+    @PutMapping("/m1/rsvp/{rsvpemail}") 
     public ResponseEntity<?> updateRSVP(@PathVariable("rsvpemail") String requestedEmail,
     @RequestBody String rsvpString) throws ParseException {
         Optional<RSVP> optRSVP = rsvpService.getRSVPByEmail(requestedEmail);
@@ -106,12 +134,41 @@ public class RSVPRestController {
         rsvp.setPhone(rsvpJsonObject.getString("phone"));
         rsvp.setComments(rsvpJsonObject.getString("comments"));
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        Date rsvpDate = sdf.parse(rsvpJsonObject.getString("confirmDate"));
+        java.util.Date rsvpDateUtil = sdf.parse(rsvpJsonObject.getString("confirmDate"));
+        Date rsvpDate = new Date(rsvpDateUtil.getTime());
         rsvp.setConfirmDate(rsvpDate);
         rsvpService.updateRSVP(rsvp, rsvp_id);
         Map<String,String> successMessage = new HashMap<>();
         successMessage.put("SuccessMessage","Operation successful");
         return ResponseEntity.status(HttpStatus.CREATED).header("Content-Type", "application/json").body(successMessage);
+    }
+
+    @PutMapping("/rsvp/{rsvpemail}") 
+    public ResponseEntity<?> updateRSVP2(@PathVariable("rsvpemail") String requestedEmail,
+    @RequestBody RSVP rsvpbody) throws ParseException {
+        Optional<RSVP> optRSVP = rsvpService.getRSVPByEmail(requestedEmail);
+        if (optRSVP.isEmpty()) {
+            Map<String,String> errorMessage = new HashMap<>();
+            errorMessage.put("Error Message","No RSVP found");
+            return ResponseEntity.status(404).header("Content-Type", "application/json").body(errorMessage);
+        }
+
+        
+        RSVP rsvp = optRSVP.get();
+        Integer rsvp_id = rsvp.getRsvp_id();
+       
+        
+        Boolean updated = rsvpService.updateRSVP(rsvpbody, rsvp_id);
+        if (updated) {
+            Map<String,String> successMessage = new HashMap<>();
+            successMessage.put("SuccessMessage","Operation successful");
+            return ResponseEntity.status(HttpStatus.CREATED).header("Content-Type", "application/json").body(successMessage);
+        } else {
+            Map<String,String> errorMessage = new HashMap<>();
+            errorMessage.put("Error Message","Failed to update");
+            return ResponseEntity.status(400).header("Content-Type", "application/json").body(errorMessage);
+        }
+        
     }
 
     @GetMapping("rsvps/count")

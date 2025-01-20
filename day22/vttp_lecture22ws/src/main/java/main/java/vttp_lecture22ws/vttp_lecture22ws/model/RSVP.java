@@ -1,6 +1,6 @@
 package main.java.vttp_lecture22ws.vttp_lecture22ws.model;
 
-import java.util.Date;
+import java.sql.Date;
 
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 
