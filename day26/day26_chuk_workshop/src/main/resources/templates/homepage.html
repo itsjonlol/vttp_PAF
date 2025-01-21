@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <form method="POST" th:action="@{/search}">
+
+    <label>Choose a year</label>
+    <select name="year" class="form-control">
+        <option value="" disabled selected>Select a year</option>
+        <option th:each="year : ${yearlist}" th:value="${year}" th:text="${year}"></option>
+    </select>
+    <div class="box-footer">
+        <button type="submit">Find</button>
+    </div>
+    </form>
+
+</body>
+</html>

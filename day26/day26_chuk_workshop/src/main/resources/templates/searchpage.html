@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>Popular songs for the year of <span th:text="${year}"></span></h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Track Name</th>
+                <th>Artists</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="music : ${musics}">
+                <td th:text="${music.trackName}"></td>
+                <td th:text="${music.artists}"></td>
+            </tr>
+        </tbody>
+    </table>
+    
+</body>
+</html>
