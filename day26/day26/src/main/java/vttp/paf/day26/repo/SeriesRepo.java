@@ -21,61 +21,65 @@ import static vttp.paf.day26.repo.Constants.F_TYPE;
 @Repository
 public class SeriesRepo {
     @Autowired
-    MongoTemplate mongoTemplate;
-
-    /*
-     * db.series.find({
-     *  name: {
-     *      $regex: "a name",
-     *      $options: "i"
-     *  }
-     * })
-     * .projections({...})
-     */
-    public List<Document> findSeriesByName(String name) {
-        // Criteria , .is -> means = to name
-        //create the predicate
-        Criteria criteria = Criteria.where(F_NAME)
-        .regex(name,"i");
-        //create the query using the predicate
-
-        Query query = Query.query(criteria);
-        query.fields()
-        .include("name","id","summary","image.original")
-        .exclude("_id");
-        //perform the query
-        List<Document> results = mongoTemplate.find(query,Document.class,"series");
-        return results;
-        
-    }
-    /*
-     *  db.series.find({
-     *      "rating.average": {"gte:8"}       
-     *  })
-     *  .sort({"rating.average": -1})
-     *  .limit(10)
-     */
-    public List<Document> findSeriesByRating(float rating) {
-        Criteria criteria = Criteria.where(F_RATING_AVERAGE)
-                                    .gte(rating);
-        Query query = Query.query(criteria)
-                            .with(Sort.by(Sort.Direction.DESC,F_RATING_AVERAGE))
-                            .limit(5);
-        query.fields()
-        .include("name","id","summary","image.original")
-        .exclude("_id");
-        return mongoTemplate.find(query,Document.class,C_SERIES);
-    }
+    MongoTemplate template;
 
 
     /*
-     * db.series.distinct("type")
-     */
+      db.series.find({
+         name: {
+            $regex: 'a name', 
+            $options: 'i'
+         }
+      })
+      .projections({ ... })
+    */
+   public List<Document> findSeriesByName(String name) {
+      // Create the predicate
+      Criteria criteria = Criteria.where(F_NAME)
+            .regex(name, "i");
+      
+      // Create the query using the predicate
+      Query query = Query.query(criteria);
+      query.fields()
+            .include("name", "id", "summary", "image.original")
+            .exclude("_id");
 
+      // Perform the query
+      List<Document> results = template.find(query, Document.class, C_SERIES);
+
+      return (results);
+   }
+
+   /*
+      db.series.find({
+         "rating.average": { $gte: 8 }
+      }) 
+      .sort({ 'rating.average': -1 })
+      .limit(10)
+    */
+   public List<Document> findSeriesByRating(float rating) {
+
+      Criteria criteria = Criteria.where(F_RATING_AVERAGE)
+            .gte(rating);
+
+      Query query = Query.query(criteria)
+            .with(Sort.by(Sort.Direction.DESC, F_RATING_AVERAGE))
+            .limit(5);
+
+      query.fields()
+         .include("name", "id", "summary", "image.original", F_RATING_AVERAGE)
+         .exclude("_id");
+
+      return template.find(query, Document.class, C_SERIES);
+   }
+
+   /*
+    * db.series.distinct('type')
+    */
     public List<String> findTypeOfSeries() {
-        return mongoTemplate.findDistinct(
-            new Query(), "type",F_TYPE,String.class
-        );
-       
+      return template.findDistinct(
+         new Query(), F_TYPE, C_SERIES, String.class
+      );
     }
+    
 }
