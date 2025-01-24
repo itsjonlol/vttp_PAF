@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import jakarta.json.JsonObject;
 import vttp.paf.day27ws.model.Review;
 import vttp.paf.day27ws.model.UpdateReview;
 import vttp.paf.day27ws.service.ReviewService;
@@ -68,8 +69,8 @@ public class ReviewRestController {
 
     @GetMapping("/review/{review_id}")
     public ResponseEntity<?> getLatestReview(@PathVariable("review_id") String id) {
-        Document document = reviewService.getLatestReview(id);
-        return ResponseEntity.status(200).header("Content-Type", "application/json").body(document);
+        JsonObject documentJson = reviewService.getLatestReview(id);
+        return ResponseEntity.status(200).header("Content-Type", "application/json").body(documentJson.toString());
     }
     
     

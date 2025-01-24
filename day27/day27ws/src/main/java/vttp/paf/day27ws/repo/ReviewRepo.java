@@ -2,6 +2,7 @@ package vttp.paf.day27ws.repo;
 
 
 
+import java.io.StringReader;
 import java.time.LocalDateTime;
 
 import org.bson.Document;
@@ -15,6 +16,9 @@ import org.springframework.stereotype.Repository;
 
 import com.mongodb.client.result.UpdateResult;
 
+import jakarta.json.Json;
+import jakarta.json.JsonObject;
+import jakarta.json.JsonReader;
 import vttp.paf.day27ws.exception.exceptions.InvalidValueException;
 import vttp.paf.day27ws.exception.exceptions.RecordNotFoundException;
 import vttp.paf.day27ws.model.Review;
@@ -55,7 +59,7 @@ public class ReviewRepo {
         toInsert.put("rating",review.getRating());
         toInsert.put("comment",review.getComment());
         toInsert.put("ID",review.getId());
-        toInsert.put("posted",review.getDate());
+        toInsert.put("posted",review.getDate().toString());
         toInsert.put("name",review.getName());
         Document newDoc = template.insert(toInsert, C_REVIEWS);
         return newDoc !=null;
@@ -132,7 +136,7 @@ public class ReviewRepo {
         
 
     }
-    public Document getLatestReview(String id) {
+    public JsonObject getLatestReview(String id) {
         ObjectId objectId = new ObjectId(id);
         Criteria criteria = Criteria.where("_id").is(objectId);
         Query query = Query.query(criteria);
@@ -146,8 +150,16 @@ public class ReviewRepo {
             isEdited = true;
         } 
         document.put("edited",isEdited);
-        document.put("timestamp", LocalDateTime.now());
-        return document;
+        
+        document.put("timestamp", LocalDateTime.now().toString());
+        String jsonDocString = document.toJson();
+        System.out.println(jsonDocString);
+        JsonReader r = Json.createReader(new StringReader(jsonDocString));
+        JsonObject jsonDoc = r.readObject();
+      
+        
+        
+        return jsonDoc;
         
 
     }
