@@ -1,0 +1,102 @@
+Write your Task 2 answers in this file
+
+#task 2.1
+mongoimport --host=localhost --port=27017 -d bedandbreakfast -c listings_and_reviews --type=json --file data/listings.json
+
+#task 2.2
+base search
+db.listings_and_reviews.find({
+    "host.host_location": {
+        $regex: "australia",
+        $options:"i"
+    }
+})
+
+db.listings_and_reviews.aggregate([
+    {
+        $match: {
+            "host.host_location": {
+                $regex: "australia",
+                $options: "i"
+            }
+        }
+    },
+    {
+        $out: "listings"
+    }
+]);
+OR
+db.listings_and_reviews.aggregate([
+    {
+        $match: {
+            "address.street": {
+                $regex: "australia",
+                $options: "i"
+            }
+        }
+    },
+    {
+        $merge: {
+            into: "listings",
+            whenMatched: "keepExisting",
+            whenNotMatched: "insert"
+        }
+    }
+]);
+
+#task 2.3
+db.listings.aggregate([
+    {
+        $unwind: "$reviews"
+    },
+    {
+        $project: {
+           
+            "_id":"$reviews._id",
+            "date":"$reviews.date",
+            "listing_id": "$_id",
+           
+            "reviewer_name": {
+                $replaceAll: {
+                    input: "$reviews.reviewer_name",
+                    find: ",",replacement: ""}
+                },
+            "comments": {
+                $replaceAll:  {
+                    input: {
+                        $replaceAll: {
+                            input: "$reviews.comments",
+                            find: "\n",
+                            replacement:""
+                        }
+                    },
+                    find: "\r",
+                    replacement: ""
+                }
+          
+   
+                
+            }
+            
+        }
+    },
+    {
+        $merge: {
+            into: "reviews"
+        }
+    }
+]);
+
+#task 2.4
+
+db.listings.updateMany(
+    {}, {
+   
+    $unset: {
+        reviews: ""
+    }
+    }
+);
+
+#task 2.5
+mongoexport --host localhost --db bedandbreakfast --collection reviews --type=csv --out data/reviews.csv --fields date,listing_id,reviewer_name,comments
