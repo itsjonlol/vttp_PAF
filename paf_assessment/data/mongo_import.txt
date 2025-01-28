@@ -1,0 +1,3 @@
+// from paf_assessment folder
+
+mongoimport --host=localhost --port=27017 -d pafassessment2 -c listings --type=json --file data/listings.json
