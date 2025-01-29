@@ -8,7 +8,7 @@
 		<version>3.2.1</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>vttp2023.batch4.paf</groupId>
+	<groupId>vttp2023_batch4_paf</groupId>
 	<artifactId>assessment</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>assessment</name>

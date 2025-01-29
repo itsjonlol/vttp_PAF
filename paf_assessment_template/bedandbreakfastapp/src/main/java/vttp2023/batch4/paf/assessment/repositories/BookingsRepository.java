@@ -24,7 +24,7 @@ public class BookingsRepository {
 
 	// You may use this method in your task
 	public Optional<User> userExists(String email) {
-		SqlRowSet rs = template.queryForRowSet(SQL_SELECT_USER_BY_EMAIL, email);
+		SqlRowSet rs = template.queryForRowSet(SQL_SELECT_USER_BY_EMAIL, email );
 		if (!rs.next())
 			return Optional.empty();
 
@@ -36,7 +36,7 @@ public class BookingsRepository {
 	// You may only add throw exceptions to this method
 	public void newUser(User user) {
 		int updated = template.update(SQL_CREATE_NEW_USER,user.email(),user.name());
-		
+		//if updated == 0?
 		
 	}
 
