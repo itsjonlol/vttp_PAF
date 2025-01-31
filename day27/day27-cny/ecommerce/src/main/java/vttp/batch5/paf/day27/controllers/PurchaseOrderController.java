@@ -37,6 +37,9 @@ public class PurchaseOrderController {
     po.setPoId(poId);
     poSvc.insertPo(po);
     redisRepo.pushToRepo(po);
+
+    //test pubsub
+    poSvc.testPubSub(po);
     
 
     // Returns the poId as JSON object
