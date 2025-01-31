@@ -27,6 +27,7 @@ public class MessagePoller {
     @Autowired
     private ThreadWorker threadWorker;
 
+    //not used here
     @Autowired
     PurchaseOrderService poSvc;
 
@@ -64,7 +65,7 @@ public class MessagePoller {
     //     }
 
     // }
-    @Scheduled(fixedRate = 30000) // Poll every 5 minutes (300,000 ms)
+    @Scheduled(fixedRate = 60000) // Poll every 5 minutes (300,000 ms)
     public void start() {
         
         ListOperations<String, String> listOps = template.opsForList();

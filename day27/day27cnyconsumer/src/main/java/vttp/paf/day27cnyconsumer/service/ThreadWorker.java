@@ -17,6 +17,7 @@ import jakarta.json.JsonReader;
 import vttp.paf.day27cnyconsumer.models.PurchaseOrder;
 import vttp.paf.day27cnyconsumer.utils.OrderJsonFormatter;
 
+//not used here
 @Component
 public class ThreadWorker{
 

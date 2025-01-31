@@ -1,5 +1,6 @@
 package vttp.paf.day27cnyconsumer.config;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -8,7 +9,12 @@ import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
 import org.springframework.data.redis.connection.jedis.JedisClientConfiguration;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.listener.ChannelTopic;
+import org.springframework.data.redis.listener.RedisMessageListenerContainer;
+import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
+
+import vttp.paf.day27cnyconsumer.service.SubscriberService;
 
 @Configuration
 public class RedisConfig {
@@ -24,9 +30,9 @@ public class RedisConfig {
 
     @Value("${spring.data.redis.password}")
     private String redisPassword;
-
-    // @Autowired
-    // SubscriberService subscriber;
+    //add this for pub/sub
+    @Autowired
+    SubscriberService subscriber;
 
     public RedisConnectionFactory createConnectionFactory() {
         final RedisStandaloneConfiguration config = new RedisStandaloneConfiguration(redisHost, redisPort);
@@ -57,24 +63,24 @@ public class RedisConfig {
         return redisTemplate;
     }
 
-    // @Bean
-    // public RedisMessageListenerContainer createMessageListenerContainer() {
+    @Bean
+    public RedisMessageListenerContainer createMessageListenerContainer() {
 
-    //     RedisConnectionFactory redisConnectionFactory = createConnectionFactory();
-    //     RedisMessageListenerContainer container = new RedisMessageListenerContainer();
-    //     container.setConnectionFactory(redisConnectionFactory);
-    //     container.addMessageListener(listenerAdapter(subscriber), ChannelTopic.of("mytopic"));
+        RedisConnectionFactory redisConnectionFactory = createConnectionFactory();
+        RedisMessageListenerContainer container = new RedisMessageListenerContainer();
+        container.setConnectionFactory(redisConnectionFactory);
+        container.addMessageListener(listenerAdapter(subscriber), ChannelTopic.of("testpubsub"));
 
-    //     return container;
-    // }
+        return container;
+    }
 
 
-    // @Bean
-    // public MessageListenerAdapter listenerAdapter(SubscriberService redisConsumerService) {
-    //     MessageListenerAdapter adapter = new MessageListenerAdapter(redisConsumerService);
-    //     // adapter.setSerializer(new Jackson2JsonRedisSerializer<>(String.class));
+    @Bean
+    public MessageListenerAdapter listenerAdapter(SubscriberService redisConsumerService) {
+        MessageListenerAdapter adapter = new MessageListenerAdapter(redisConsumerService);
+        // adapter.setSerializer(new Jackson2JsonRedisSerializer<>(String.class));
 
-    //     return adapter;
-    // }
+        return adapter;
+    }
 
 }
