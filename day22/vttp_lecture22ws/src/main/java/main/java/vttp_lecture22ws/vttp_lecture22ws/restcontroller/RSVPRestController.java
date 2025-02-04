@@ -2,9 +2,9 @@ package main.java.vttp_lecture22ws.vttp_lecture22ws.restcontroller;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
-import java.sql.Date;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -55,13 +55,13 @@ public class RSVPRestController {
         return ResponseEntity.status(200).header("Content-Type", "application/json").body(optRSVP.get());
     }
 
-    @PostMapping("m1/rsvp")
+    @PostMapping("/rsvp")
     public ResponseEntity<?> addRSVP(@RequestBody String rsvpString) throws ParseException {
         InputStream is = new ByteArrayInputStream(rsvpString.getBytes());
         JsonReader reader = Json.createReader(is);
         JsonObject rsvpJsonObject = reader.readObject();
         String requestedEmail = rsvpJsonObject.getString("email");
-        
+        System.out.println("string rvspstring");
         
 
         RSVP rsvp = new RSVP();
@@ -73,13 +73,14 @@ public class RSVPRestController {
 
         String stringDate = rsvpJsonObject.getString("confirmDate");
 
-        // SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         //convert util.date to sql date
         // java.util.Date rsvpDateUtil = sdf.parse(rsvpJsonObject.getString("confirmDate"));
         // Date rsvpDate = new Date(rsvpDateUtil.getTime());
         //convert string to sql date
-        Date rsvpDate = Date.valueOf(stringDate);
         
+        // Date rsvpDate = Date.valueOf(stringDate);
+        Date rsvpDate = sdf.parse(stringDate);
         
         rsvp.setConfirmDate(rsvpDate);
   
@@ -95,7 +96,7 @@ public class RSVPRestController {
         return ResponseEntity.status(HttpStatus.CREATED).header("Content-Type", "application/json").body(successMessage);
     }
 
-    @PostMapping("/rsvp")
+    @PostMapping("m2/rsvp")
     public ResponseEntity<?> addRSV2(@RequestBody RSVP rsvp) throws ParseException {
        
         String requestedEmail = rsvp.getEmail();
