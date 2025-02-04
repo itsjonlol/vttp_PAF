@@ -1,5 +1,6 @@
 package vttp.paf.day26_ws.repo;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -86,5 +87,27 @@ public class GameRepo {
         return Optional.of(game);
     }
 
-    
+    public Document getGameDocuments(Integer limit,Integer offset,Boolean sortByRank) {
+        Query query = new Query();
+        if (!sortByRank) {
+            query.limit(limit).skip(offset);
+        } 
+        query.fields()
+        .include("gid","name")
+        .exclude("_id");
+        
+        query.limit(limit)
+            .skip(offset)
+            .with(Sort.by(Sort.Direction.ASC, 
+        F_RANKING));
+        
+
+        List<Document> documents = template.find(query,Document.class,C_GAMES);
+        Document bigDocument = new Document();
+        bigDocument.put("games",documents);
+        bigDocument.put("limit",limit);
+        bigDocument.put("offset",offset);
+        bigDocument.put("date", new Date());
+        return bigDocument;
+    }
 }
