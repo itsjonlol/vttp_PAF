@@ -2,6 +2,7 @@ package vttp.paf.day26_chuk_workshop.model;
 
 public class Music {
     
+
     private String artists;
     private String trackName;
 
@@ -9,18 +10,11 @@ public class Music {
 
     }
 
-   
-
-    
 
     @Override
     public String toString() {
         return "Music [artists=" + artists + ", trackName=" + trackName + "]";
     }
-
-
-
-
 
     public String getTrackName() {
         return trackName;
