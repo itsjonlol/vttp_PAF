@@ -3,7 +3,8 @@ package vttp.day23ws.repo;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.sql.Date;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
 
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 
@@ -15,21 +16,30 @@ public class Utils {
         details.setOrderId(rs.getInt("order_id"));
         // Timestamp orderTimestamp = rs.getTimestamp("order_date");
         String orderDateString = rs.getString("order_date");
+        
+        System.out.println(orderDateString);
 
         // Date orderDate = new Date(orderTimestamp.getTime());
         // LocalDateTime orderDateTime = rs.getObject("order_date", LocalDateTime.class);
 
         // LocalDate orderLocalDate = rs.getTimestamp("order_date");
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm");
-        try {
-            java.util.Date orderDate = sdf.parse(orderDateString);
-            details.setOrderDate(new Date(orderDate.getTime()));
-            // Date orderDate = sdf.parse(orderDateString);
-            // details.setOrderDate(orderDate);
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
+      
+            // java.util.Date orderDate = sdf.parse(orderDateString);
+            // details.setOrderDate(new Date(orderDate.getTime()));
 
+        // LocalDate orderDate = LocalDate.parse(orderDateString, dtf);
+        Date utilDate;
+        try {
+            utilDate = sdf.parse(orderDateString);
         } catch (ParseException ex) {
-           System.out.println(ex.getMessage());
+            utilDate = new Date();
         }
+        details.setOrderDate(utilDate);
+        
+
+        
         
         
         // details.setOrderDate(rs.getDate("order_date"));

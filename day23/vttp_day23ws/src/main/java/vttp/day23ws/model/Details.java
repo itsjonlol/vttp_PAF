@@ -1,6 +1,7 @@
 package vttp.day23ws.model;
 
-import java.sql.Date;
+
+import java.util.Date;
 
 public class Details {
     
@@ -28,12 +29,7 @@ public class Details {
     public void setOrderId(Integer orderId) {
         this.orderId = orderId;
     }
-    public Date getOrderDate() {
-        return orderDate;
-    }
-    public void setOrderDate(Date orderDate) {
-        this.orderDate = orderDate;
-    }
+    
     public Integer getCustomerid() {
         return customerid;
     }
@@ -62,6 +58,24 @@ public class Details {
     // public void setOrderTimestamp(Timestamp orderTimestamp) {
     //     this.orderTimestamp = orderTimestamp;
     // }
+
+    // public LocalDate getOrderDate() {
+    //     return orderDate;
+    // }
+
+    // public void setOrderDate(LocalDate orderDate) {
+    //     this.orderDate = orderDate;
+    // }
+
+    public Date getOrderDate() {
+        return orderDate;
+    }
+
+    public void setOrderDate(Date orderDate) {
+        this.orderDate = orderDate;
+    }
+
+    
 
     
 }
