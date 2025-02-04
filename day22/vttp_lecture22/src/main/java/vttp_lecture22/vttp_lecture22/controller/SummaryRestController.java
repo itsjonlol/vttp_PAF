@@ -24,7 +24,7 @@ public class SummaryRestController {
     public ResponseEntity<?> getMethodName(@RequestParam(defaultValue="50") Integer bookCount,
     @RequestParam(defaultValue="10") Integer limit) {
         List<Summary> summaries = kindleRepo.getSummaries(bookCount, limit);
-        return ResponseEntity.status(404).header("Content-Type", "application/json").body(summaries);
+        return ResponseEntity.status(200).header("Content-Type", "application/json").body(summaries);
     }
     
     
