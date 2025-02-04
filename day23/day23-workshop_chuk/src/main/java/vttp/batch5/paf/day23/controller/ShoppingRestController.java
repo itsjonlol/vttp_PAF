@@ -27,6 +27,7 @@ import vttp.batch5.paf.day23.model.PurchaseOrder;
 import vttp.batch5.paf.day23.service.ShoppingService;
 
 
+
 @RestController
 @RequestMapping("/api")
 public class ShoppingRestController {
@@ -43,6 +44,7 @@ public class ShoppingRestController {
         String username = bodyJsonObject.getString("name");
         String address = bodyJsonObject.getString("address");
         String deliveryDateString = bodyJsonObject.getString("deliveryDate");
+       
         JsonArray bodyJsonArray = bodyJsonObject.getJsonArray("lineItems");
         System.out.println(username);
         System.out.println(address);
@@ -50,17 +52,19 @@ public class ShoppingRestController {
         PurchaseOrder purchaseOrder = new PurchaseOrder();
         List<LineItem> lineItems = new ArrayList<>();
         
-        purchaseOrder.setUsername(username);
+        purchaseOrder.setName(username);
         purchaseOrder.setAddress(address);
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
         try {
             Date deliveryDate = sdf.parse(deliveryDateString);
             purchaseOrder.setDeliveryDate(deliveryDate);
+            System.out.println("incoming payload for delivery date is " +deliveryDateString);
+            System.out.println("after convert to date " + deliveryDate);
         } catch (ParseException ex) {
             System.out.println(ex.getMessage());
         }
-        
+       
 
         for (int i = 0; i< bodyJsonArray.size();i++) {
             JsonObject items = bodyJsonArray.getJsonObject(i);
@@ -81,6 +85,17 @@ public class ShoppingRestController {
         // @RequestBody MultiValueMap<String,String> entry
         return ResponseEntity.status(HttpStatus.OK).header("Content-Type", "application/json").body(successMessage);
     }
+
+    @PutMapping("purchaseorder2")
+    public ResponseEntity<?> putMethodName(@RequestBody PurchaseOrder purchaseOrder) {
+        //TODO: process PUT request
+        
+        shoppingService.addShopping(purchaseOrder);
+        Map<String,String> successMessage = new HashMap<>();
+        successMessage.put("Message", "Operation sucessful");
+        return ResponseEntity.status(HttpStatus.OK).header("Content-Type", "application/json").body(successMessage);
+    }
+    
    
    
 }

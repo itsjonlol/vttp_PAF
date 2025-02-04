@@ -6,8 +6,9 @@ import java.util.List;
 public class PurchaseOrder {
     
     private Integer purchaseId;
-    private String username;
+    private String name;
     private String address;
+    // @JsonFormat(pattern = "yyyy-MM-dd")
     private Date deliveryDate;
     private List<LineItem> lineItems;
     
@@ -16,8 +17,8 @@ public class PurchaseOrder {
     }
     
 
-    public PurchaseOrder(String username, String address, Date deliveryDate, List<LineItem> lineItems) {
-        this.username = username;
+    public PurchaseOrder(String name, String address, Date deliveryDate, List<LineItem> lineItems) {
+        this.name = name;
         this.address = address;
         this.deliveryDate = deliveryDate;
         this.lineItems = lineItems;
@@ -30,11 +31,11 @@ public class PurchaseOrder {
     public void setPurchaseId(Integer purchaseId) {
         this.purchaseId = purchaseId;
     }
-    public String getUsername() {
-        return username;
+    public String getName() {
+        return name;
     }
-    public void setUsername(String username) {
-        this.username = username;
+    public void setName(String name) {
+        this.name = name;
     }
     public String getAddress() {
         return address;
