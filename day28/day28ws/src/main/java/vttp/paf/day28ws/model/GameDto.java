@@ -13,6 +13,7 @@ public class GameDto {
     private List<String> reviews; // List of review URLs
     private int game_id; // Unique ID of the game
     private Date timestamp; // Timestamp of the response
+    //@DateTimeFormat(iso = ISO.DATE_TIME) private Date date;
 
     public GameDto() {
 

@@ -3,6 +3,7 @@ package vttp.paf.day28ws.restcontroller;
 import java.util.Date;
 import java.util.List;
 
+import org.bson.Document;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -34,6 +35,12 @@ public class ReviewRestController {
     public ResponseEntity<?> getMethodName(@PathVariable("game_id") Integer gid) {
         GameDto gameDto = reviewRepo.getGameReviews(gid);
         return ResponseEntity.status(200).header("Content-Type", "application/json").body(gameDto);
+    }
+    //test doc
+    @GetMapping("/game/{game_id}/reviews2")
+    public ResponseEntity<?> getMethodName2(@PathVariable("game_id") Integer gid) {
+        Document gameDoc = reviewRepo.getGameDoc(gid);
+        return ResponseEntity.status(200).header("Content-Type", "application/json").body(gameDoc);
     }
 
     @GetMapping("games/highest")

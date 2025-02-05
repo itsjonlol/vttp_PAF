@@ -158,6 +158,110 @@ public class ReviewRepo {
         return gameDTO;
     }
 
+
+
+    /*
+     * db.games.aggregate([
+    {
+        $match: {
+            gid: 10
+        }
+    },
+    {
+        $lookup: {
+            from: "comments",
+            localField: "gid",
+            foreignField: "gid",
+            as: "reviews"
+        }
+    },
+    {
+        $unwind: "$reviews"
+    },
+    {
+        $group: {
+            _id: "$gid",
+            name: {$first:"$name"},
+            year: {$first:"year"},
+            ranking: {$first:"ranking"},
+            users_rated:{$first:"$users_rated"},
+            url: {$first: "$url"},
+            thumbnail: {$first:"$image"},
+            average: {
+                $avg: "$reviews.rating"
+            },
+            reviews: {
+                $push:{
+                    $concat:["/review","$reviews._id"]
+                }
+            }
+        }
+    },
+    {
+        $project:{
+            _id:0
+        }
+    }
+    
+])
+     */
+    public Document getGameDoc(Integer gid) {
+      MatchOperation matchStage = Aggregation.match(Criteria.where("gid").is(gid));
+        
+        // Lookup reviews from the comments collection
+        LookupOperation lookupStage = LookupOperation.newLookup()
+            .from("comments")          // Collection to join
+            .localField("gid")         // Field from the games collection
+            .foreignField("gid")       // Field from the comments collection
+            .as("reviews");            // Output array field
+
+        
+        // Unwind stage: Deconstruct the reviews array
+        UnwindOperation unwindStage = Aggregation.unwind("reviews");
+
+        // Group stage: Group by game ID and accumulate review URLs
+        GroupOperation groupStage = Aggregation.group("gid")
+                .first("name").as("name")
+                .first("year").as("year")
+                .first("ranking").as("rank")
+                .avg("reviews.rating").as("average")
+                .first("users_rated").as("users_rated")
+                .first("image").as("thumbnail")
+                .push(StringOperators.Concat.stringValue("/reviews/").concatValueOf("reviews._id")
+                        
+                ).as("reviews");
+               
+                
+
+        // Project stage: Reshape the output
+        ProjectionOperation projectStage = Aggregation.project()
+                .andExclude("_id");
+               
+                // .and(new Date()).as("timestamp");
+
+        // Build the aggregation pipeline
+        Aggregation pipeline = Aggregation.newAggregation(
+                matchStage,
+                lookupStage,
+                unwindStage,
+                groupStage,
+                projectStage
+        );
+
+
+        
+        // Execute the aggregation
+        AggregationResults<Document> results = template.aggregate(pipeline, "games", Document.class);
+
+        // Get the result
+        Document result = results.getUniqueMappedResult();
+        if (result == null) {
+            throw new RecordNotFoundException("Record not found");
+        }
+       
+        return result;
+    }
+
     /*
      * db.comments.aggregate([
   {
