@@ -8,7 +8,7 @@
 		<version>3.1.1</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>vttp2023.batch3.assessment.paf</groupId>
+	<groupId>vttp2023_batch3_assessment_paf</groupId>
 	<artifactId>bookings</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>bookings</name>
@@ -38,7 +38,7 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-validation</artifactId>
-			<version>3.1.1</version>
+			
 		</dependency>
 
 		<dependency>

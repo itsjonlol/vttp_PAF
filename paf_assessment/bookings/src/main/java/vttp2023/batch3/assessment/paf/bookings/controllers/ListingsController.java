@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import vttp2023.batch3.assessment.paf.bookings.models.Listings;
 import vttp2023.batch3.assessment.paf.bookings.models.ListingsFull;
@@ -43,7 +44,7 @@ public class ListingsController {
 	
 	//TODO: Task 3
 	@GetMapping("/search")
-	public ModelAndView getView2(@RequestParam MultiValueMap<String,String> params) {
+	public ModelAndView getView2(@RequestParam MultiValueMap<String,String> params,HttpSession session) {
 		ModelAndView mav = new ModelAndView("view2");
 		String country = params.getFirst("country");
 		Integer accommodates = Integer.parseInt(params.getFirst("accommodates"));
@@ -69,7 +70,25 @@ public class ListingsController {
         mav.addObject("errorMessages", errorMessages);  // Add all error messages
     }
 		List<Listings> listings = listingsService.getListings(country, accommodates, price);
+		
+		
 		mav.addObject("listings",listings);
+		session.setAttribute("country", country);
+		session.setAttribute("accommodates", accommodates.toString());
+    	session.setAttribute("price", price.toString());
+		// System.out.println(session.getAttribute("country"));
+		// System.out.println(session.getAttribute("accommodates"));
+		// System.out.println(session.getAttribute("price"));
+		
+		// mav.addObject("countrysession",session.getAttribute("country"));
+		// mav.addObject("accommodatessession",session.getAttribute("accommodates"));
+		// mav.addObject("pricesession",session.getAttribute("price"));
+		
+		
+
+		
+		
+    	
 
 		return mav;
 	}
@@ -77,7 +96,7 @@ public class ListingsController {
 
 	//TODO: Task 4
 	@GetMapping("/details/{accommodation_id}")
-	public ModelAndView getView3(@PathVariable("accommodation_id") String accommodationId) {
+	public ModelAndView getView3(@PathVariable("accommodation_id") String accommodationId,HttpSession session) {
 		ModelAndView mav = new ModelAndView("view3");
 		Optional<ListingsFull> optListingsFull = listingsService.getListingsDetails(accommodationId);
 		System.out.println(optListingsFull.isEmpty());
@@ -93,6 +112,9 @@ public class ListingsController {
 		mav.addObject("listingdetails",optListingsFull.get());
 		mav.addObject("reservations", new Reservations());
 		mav.setStatus(HttpStatusCode.valueOf(200));
+		mav.addObject("countrysession",session.getAttribute("country"));
+		mav.addObject("accommodatessession",session.getAttribute("accommodates"));
+		mav.addObject("pricesession",session.getAttribute("price"));
 		
 		return mav;
 	}

@@ -122,6 +122,10 @@
     <p th:if="${errorBooking}" th:text="${errorBooking}" class="text-danger"></p>
 
     <button id="go-back">Back</button>
+     
+    <a th:href="@{/search(country=${countrysession}, accommodates=${accommodatessession}, price=${pricesession})}">
+        Go back (session)
+    </a>
     
 </div>
 <script>
