@@ -2,8 +2,8 @@ package vttp.paf.day27ws.repo;
 
 
 
-import java.io.StringReader;
 import java.time.LocalDateTime;
+import java.util.Date;
 
 import org.bson.Document;
 import org.bson.types.ObjectId;
@@ -16,9 +16,6 @@ import org.springframework.stereotype.Repository;
 
 import com.mongodb.client.result.UpdateResult;
 
-import jakarta.json.Json;
-import jakarta.json.JsonObject;
-import jakarta.json.JsonReader;
 import vttp.paf.day27ws.exception.exceptions.InvalidValueException;
 import vttp.paf.day27ws.exception.exceptions.RecordNotFoundException;
 import vttp.paf.day27ws.model.Review;
@@ -32,13 +29,17 @@ public class ReviewRepo {
     @Autowired
     MongoTemplate template;
 
+    // db.games.findOne({"gid":5000000})
     public Boolean checkIfGameExist(Integer id) {
         
         Criteria criteria = Criteria.where("gid").is(id);
         Query query = Query.query(criteria);
         Document gameDocument = template.findOne(query,Document.class,C_GAMES);
+        if (gameDocument == null) {
+            throw new RecordNotFoundException("Id " + id + " does not exist");
+        }
         
-        return gameDocument != null;
+        return true;
     }
 
     public String getGameName(Integer id) {
@@ -46,8 +47,18 @@ public class ReviewRepo {
         Criteria criteria = Criteria.where("gid").is(id);
         Query query = Query.query(criteria);
         Document gameDocument = template.findOne(query,Document.class,C_GAMES);
+        if (gameDocument == null) {
+            throw new RecordNotFoundException("Id " + id + " does not exist");
+        }
         return gameDocument.getString("name");
     }
+    // db.reviews.insert({
+    //     "user":"manualinsert",
+    //     rating: 5,
+    //     comment: "lame asf bro",
+    //     "ID": 103,
+    //     "name" : "Detroit-Cleveland Grand Prix"
+    // })
     public Boolean insertReview(Review review) {
 
         if (review.getRating() < 0 || review.getRating() >10) {
@@ -59,12 +70,15 @@ public class ReviewRepo {
         toInsert.put("rating",review.getRating());
         toInsert.put("comment",review.getComment());
         toInsert.put("ID",review.getId());
-        toInsert.put("posted",review.getDate().toString());
+        toInsert.put("posted",review.getDate());
         toInsert.put("name",review.getName());
         Document newDoc = template.insert(toInsert, C_REVIEWS);
-        return newDoc !=null;
+        ObjectId id = newDoc.getObjectId("_id");
+        return id !=null;
     }
-
+    /*
+     * db.reviews.find({_id:ObjectId("6793419a8297ed65810fa0c8")})
+     */
     public Boolean checkIfReviewExist(String id) {
         ObjectId objectId = new ObjectId(id);
         Criteria criteria = Criteria.where("_id").is(objectId);
@@ -112,7 +126,7 @@ public class ReviewRepo {
        
         //can remove the Document.class here
         UpdateResult result = template.updateFirst(query, updateOps, Document.class, C_REVIEWS);
-        return result.wasAcknowledged() && result.getModifiedCount() > 0;
+        return result.getModifiedCount() > 0;
         
     }
     /*
@@ -131,12 +145,11 @@ public class ReviewRepo {
         
         document.remove("_id");
         document.put("timestamp", LocalDateTime.now());
-        
-        return document;
-        
 
+        return document;
+    
     }
-    public JsonObject getLatestReview(String id) {
+    public Document getLatestReview(String id) {
         ObjectId objectId = new ObjectId(id);
         Criteria criteria = Criteria.where("_id").is(objectId);
         Query query = Query.query(criteria);
@@ -152,14 +165,17 @@ public class ReviewRepo {
         document.put("edited",isEdited);
         
         document.put("timestamp", LocalDateTime.now().toString());
-        String jsonDocString = document.toJson();
-        System.out.println(jsonDocString);
-        JsonReader r = Json.createReader(new StringReader(jsonDocString));
-        JsonObject jsonDoc = r.readObject();
+        document.put("utilDate",new Date());
+        document.put("utilDateString",new Date().toString());
+        // document.put("timestamp",LocalDateTime.now()).toString();
+        // String jsonDocString = document.toJson();
+        // System.out.println(jsonDocString);
+        // JsonReader r = Json.createReader(new StringReader(jsonDocString));
+        // JsonObject jsonDoc = r.readObject();
       
-        
-        
-        return jsonDoc;
+        return document;
+        //if returning jsonobject directly (DONT)
+        // return jsonDoc;
         
 
     }

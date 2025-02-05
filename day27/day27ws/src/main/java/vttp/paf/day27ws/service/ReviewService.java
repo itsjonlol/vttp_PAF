@@ -4,7 +4,6 @@ import org.bson.Document;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import jakarta.json.JsonObject;
 import vttp.paf.day27ws.model.Review;
 import vttp.paf.day27ws.repo.ReviewRepo;
 
@@ -29,7 +28,7 @@ public class ReviewService {
         return reviewRepo.getReviewHistory(id);
     }
 
-    public JsonObject getLatestReview(String id) {
+    public Document getLatestReview(String id) {
         return reviewRepo.getLatestReview(id);
     }
 }

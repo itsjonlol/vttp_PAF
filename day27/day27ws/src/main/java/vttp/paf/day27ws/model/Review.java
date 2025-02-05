@@ -2,6 +2,8 @@ package vttp.paf.day27ws.model;
 
 import java.time.LocalDate;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 public class Review {
 //     user: <name form field>,
 // rating: <rating form field>,
@@ -14,6 +16,7 @@ public class Review {
     private String comment;
 
     private Integer id;
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate date;
     private String name;
 

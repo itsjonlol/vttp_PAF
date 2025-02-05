@@ -34,7 +34,7 @@ public class ReviewRestController {
 
     @PostMapping("/review")
     public ResponseEntity<?> postReviewApi(@RequestBody Review review) {
-        //alternatively can add exceptions
+        //alternatively can add exceptions or optional
         if (!reviewService.checkIfGameExists(review.getId())) {
             Map<String,String> errorMessage = new HashMap<>();
             errorMessage.put("ErrorMessage","gid doesn't exist");
@@ -69,8 +69,10 @@ public class ReviewRestController {
 
     @GetMapping("/review/{review_id}")
     public ResponseEntity<?> getLatestReview(@PathVariable("review_id") String id) {
-        JsonObject documentJson = reviewService.getLatestReview(id);
-        return ResponseEntity.status(200).header("Content-Type", "application/json").body(documentJson.toString());
+        // JsonObject documentJson = reviewService.getLatestReview(id);
+        // return ResponseEntity.status(200).header("Content-Type", "application/json").body(documentJson.toString());
+        Document document = reviewService.getLatestReview(id);
+        return ResponseEntity.status(200).header("Content-Type", "application/json").body(document);
     }
     
     
