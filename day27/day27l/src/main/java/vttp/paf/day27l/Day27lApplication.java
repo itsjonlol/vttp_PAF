@@ -18,7 +18,9 @@ public class Day27lApplication implements CommandLineRunner{
 	@Override
 	public void run(String... args) throws Exception {
 		// TODO Auto-generated method stub
-		taskRepo.searchComments("enjoyable","fun times");
+		// taskRepo.delete();
+		taskRepo.deleteOne();
+		// taskRepo.searchComments("enjoyable","fun times");
 	}
 
 }

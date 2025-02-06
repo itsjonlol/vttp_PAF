@@ -15,6 +15,7 @@ import org.springframework.data.mongodb.core.query.TextQuery;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Repository;
 
+import com.mongodb.client.result.DeleteResult;
 import com.mongodb.client.result.UpdateResult;
 
 import jakarta.json.Json;
@@ -48,7 +49,9 @@ public class TaskRepo {
 
         System.out.printf(">>>to insert: %s\n",toInsert.toJson());
         
+        
         Document insertedDoc = template.insert(toInsert,C_TASKS);
+        
         ObjectId id = insertedDoc.getObjectId("_id");
 
         System.out.printf(">>>after insert: %s\n",insertedDoc.toJson());
@@ -76,14 +79,14 @@ public class TaskRepo {
             Document docToInsert = Document.parse(jsonString);
             // Document result = template.insert(docToInsert,C_TASKS);
             //type inference
-            var result = template.insert(docToInsert,C_TASKS);
+            Document result = template.insert(docToInsert,C_TASKS);
             // System.out.printf(">>>> result: %s\n",result);
             // System.out.printf(">>. _id: %s\n",result.getString("_id"));
 
             //Document -> JsonObject
             jsonString = result.toString();
             JsonReader r = Json.createReader(new StringReader(jsonString));
-            var jsonResult = r.readObject();
+            JsonObject jsonResult = r.readObject();
             System.out.printf(">>> in JSON-P: %s\n",jsonResult.toString());
             
 
@@ -99,7 +102,7 @@ public class TaskRepo {
             .set("venue","Bugis")
             .push("friends","betty");
         
-        UpdateResult result = template.updateFirst(query, updateOps, javax.swing.text.Document.class,C_TASKS);
+        UpdateResult result = template.updateFirst(query, updateOps, Document.class,C_TASKS);
 
         System.out.printf(">>>Matched: %d\n",result.getMatchedCount());
         System.out.printf(">>>Modify: %d\n",result.getModifiedCount());
@@ -123,4 +126,24 @@ public class TaskRepo {
                 System.out.printf(">>>>%s\n\n",d.toJson());
             });
     }
+
+    public void delete() {
+        Criteria criteria = Criteria.where("name").is("jon");
+        Query query = new Query(criteria);
+        DeleteResult result = template.remove(query, "tasks");
+        
+        System.out.printf("Deleted documents: %d\n", result.getDeletedCount());
+
+    }
+    public void deleteOne() {
+        Criteria criteria = Criteria.where("name").is("jon");
+        Query query = new Query(criteria);
+        query.limit(1);
+        DeleteResult result = template.remove(query, "tasks");
+        Document deletedDoc = template.findAndRemove(query, Document.class, "tv_shows");
+     
+        System.out.printf("Deleted documents: %d\n", result.getDeletedCount());
+
+    }
+    
 }
