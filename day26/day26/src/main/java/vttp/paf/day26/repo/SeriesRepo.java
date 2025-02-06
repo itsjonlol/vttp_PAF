@@ -31,7 +31,7 @@ public class SeriesRepo {
             $options: 'i'
          }
       })
-      .projections({ ... })
+      .projection({ ... })
     */
    public List<Document> findSeriesByName(String name) {
       // Create the predicate

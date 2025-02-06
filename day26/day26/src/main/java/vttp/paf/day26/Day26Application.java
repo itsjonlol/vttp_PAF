@@ -9,12 +9,16 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import vttp.paf.day26.repo.SeriesRepo;
+import vttp.paf.day26.repo.TestRepo;
 
 @SpringBootApplication
 public class Day26Application implements CommandLineRunner {
 
 	@Autowired
 	SeriesRepo seriesRepo;
+
+	@Autowired
+	TestRepo testRepo;
 	public static void main(String[] args) {
 		SpringApplication.run(Day26Application.class, args);
 	}
@@ -39,14 +43,15 @@ public class Day26Application implements CommandLineRunner {
 		// 	// System.out.printf("time: %s\n",schedule.getString("time"));
 		// 	}
 
-			results.stream()
-		.limit(3)
-		.forEach(d -> {
-			System.out.println(d.toJson());
+		// 	results.stream()
+		// .limit(3)
+		// .forEach(d -> {
+		// 	System.out.println(d.toJson());
 	
-		});
+		// });
 		
 
+		testRepo.testQueries4().forEach(d -> {System.out.println(d.toJson());});
 		
 		
 	}
