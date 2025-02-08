@@ -2,12 +2,15 @@ package vttp_paf_day24l.vttp_paf_day24l.model.exception;
 
 import java.util.Date;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 
 public class ErrorMessage {
     
 
     private int status;
     private String message;
+    @JsonFormat(pattern = "EEE, dd MMM yyyy HH:mm:ss zzz")
     private Date timeStamp;
     private String endPoint;
     
