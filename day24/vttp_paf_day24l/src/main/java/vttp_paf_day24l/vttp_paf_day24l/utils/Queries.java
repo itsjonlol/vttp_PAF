@@ -49,5 +49,51 @@ public class Queries {
     public static final String SQL_RESERVATION_DETAIL = """
                     insert into ReservationDetail(book_id,reservation_id) values (?,?)
                     """;
+ 
+        //for account repo
+            
 
+
+        public static final String SQL_SELECT_ACCOUNT_BY_ID = 
+        """
+            SELECT * FROM accounts 
+            WHERE acct_id = ?
+        """;
+
+    public static final String SQL_UPDATE_ACCOUNT =
+        """
+            UPDATE accounts 
+                SET balance = ?
+                WHERE last_update = (SELECT a.last_update 
+                                     FROM (SELECT last_update FROM accounts
+                                            WHERE acct_id = ?) a)
+        """;
+
+    public static final String SQL_GET_LAST_MODIFIED = 
+        """
+            SELECT last_update 
+            FROM accounts
+            WHERE acct_id = ?
+        """;
+
+    public static final String SQL_WITHDRAW = 
+        """
+           UPDATE accounts 
+           SET balance = balance - ?
+           WHERE acct_id = ? 
+        """;
+
+    public static final String SQL_DEPOSIT =
+        """
+            UPDATE accounts
+            SET balance = balance + ?
+            WHERE acct_id = ?
+        """;
+
+    public static final String SQL_GET_BALANCE =
+        """
+            SELECT balance 
+            FROM accounts
+            WHERE acct_id = ?
+        """;
 }

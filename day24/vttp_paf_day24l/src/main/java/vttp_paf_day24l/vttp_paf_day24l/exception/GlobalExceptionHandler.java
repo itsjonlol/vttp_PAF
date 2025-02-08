@@ -12,6 +12,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import vttp_paf_day24l.vttp_paf_day24l.model.exception.AccountNotFoundException;
 import vttp_paf_day24l.vttp_paf_day24l.model.exception.ErrorMessage;
 import vttp_paf_day24l.vttp_paf_day24l.model.exception.InsufficientBalanceException;
+import vttp_paf_day24l.vttp_paf_day24l.model.exception.ModifiedException;
 
 @RestControllerAdvice  // to intercept. middleware
 public class GlobalExceptionHandler {
@@ -20,7 +21,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class) 
     public ResponseEntity<ErrorMessage> handleException(Exception ex,
     HttpServletRequest request, HttpServletResponse response) {
-        ErrorMessage errorMessage = new ErrorMessage(response.getStatus(),
+        ErrorMessage errorMessage = new ErrorMessage(HttpStatus.INTERNAL_SERVER_ERROR.value(),
         ex.getMessage(),new Date(), request.getRequestURI());
 
         return new ResponseEntity<>(errorMessage,HttpStatus.INTERNAL_SERVER_ERROR);
@@ -44,6 +45,16 @@ public class GlobalExceptionHandler {
         ex.getMessage(),new Date(), request.getRequestURI());
 
         return new ResponseEntity<>(errorMessage,HttpStatus.BAD_REQUEST);
+
+    }
+
+    @ExceptionHandler(ModifiedException.class) 
+    public ResponseEntity<ErrorMessage> ModifiedException(Exception ex,
+    HttpServletRequest request, HttpServletResponse response) {
+        ErrorMessage errorMessage = new ErrorMessage(HttpStatus.PRECONDITION_FAILED.value(),
+        ex.getMessage(),new Date(), request.getRequestURI());
+
+        return new ResponseEntity<>(errorMessage,HttpStatus.PRECONDITION_FAILED);
 
     }
 
