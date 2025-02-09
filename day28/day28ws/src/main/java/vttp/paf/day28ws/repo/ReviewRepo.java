@@ -9,6 +9,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.AggregationResults;
+import org.springframework.data.mongodb.core.aggregation.CountOperation;
 import org.springframework.data.mongodb.core.aggregation.GroupOperation;
 import org.springframework.data.mongodb.core.aggregation.LimitOperation;
 import org.springframework.data.mongodb.core.aggregation.LookupOperation;
@@ -458,6 +459,20 @@ public class ReviewRepo {
   
       // Return the mapped results
       return bigDocument;
+  }
+  public List<Document> testGroup() {
+      GroupOperation groupStage = Aggregation.group("$gid")
+      .count().as("count");
+      SortOperation sortStage = Aggregation.sort(Sort.Direction.DESC, "count");
+      CountOperation countStage = Aggregation.count().as("totalCount");
+      // CountOperation countStage = Aggregation.count().as("no of docs");
+      LimitOperation limitStage = Aggregation.limit(10);
+
+      Aggregation aggregation = Aggregation.newAggregation(groupStage,sortStage,countStage);
+      AggregationResults<Document> results = template.aggregate(
+              aggregation, "comments", Document.class
+      );
+      return results.getMappedResults();
   }
 
     

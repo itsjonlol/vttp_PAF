@@ -22,6 +22,7 @@ import vttp.paf.day28ws.service.ReviewService;
 
 
 
+
 @RestController
 @RequestMapping("/api")
 public class ReviewRestController {
@@ -89,6 +90,12 @@ public class ReviewRestController {
 
         // Build the final JsonObject
         return responseBuilder.build();
+    }
+    
+    @GetMapping("/test")
+    public ResponseEntity<?> getMethodName() {
+        List<Document> documents = reviewRepo.testGroup();
+        return ResponseEntity.status(200).header("Content-Type", "application/json").body(documents);
     }
     
     
