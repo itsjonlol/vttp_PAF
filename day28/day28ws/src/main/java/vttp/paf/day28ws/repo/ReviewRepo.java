@@ -30,7 +30,7 @@ public class ReviewRepo {
     @Autowired
     MongoTemplate template;
 
-
+  
     /*
      * db.games.aggregate([
   { 
@@ -331,7 +331,7 @@ public class ReviewRepo {
                 .as("gameDetails"); // Output array field
 
         // Unwind stage: Deconstruct the gameDetails array
-        UnwindOperation unwindStage = Aggregation.unwind("gameDetails");
+        UnwindOperation unwindStage = Aggregation.unwind("$gameDetails");
 
         // Project stage: Reshape the output
         ProjectionOperation projectStage = Aggregation.project()
@@ -378,6 +378,87 @@ public class ReviewRepo {
         // Return the results as a list
         return games;
     }
+
+
+    /*
+     * db.comments.aggregate([
+    
+    {
+        $sort: {rating:-1}
+    },
+    {
+        $lookup: {
+            from: "games",
+            localField: "gid",
+            foreignField: "gid",
+            as: "games"
+        }
+    },
+    {
+        $unwind: "$games"
+    },
+    {
+        $group: {
+            _id: "$gid",
+            name: {$first: "$games.name"},
+            maxrating: {
+                $max: "$rating"
+            },
+            user: {$first: "$user"},
+            comment: {$first: "$c_text"},
+            review: {$first: "$_id"}
+        }
+    },
+    {
+      }
+])
+     */
+    public Document getHighestRatedGamesDocuments() {
+      // Sort by rating in descending order
+      SortOperation sortStage = Aggregation.sort(Sort.Direction.DESC, "rating");
+  
+      // Lookup to join with the games collection
+      LookupOperation lookupStage = LookupOperation.newLookup()
+              .from("games") // Join collection
+              .localField("gid") // Field from the comments collection
+              .foreignField("gid") // Field from the games collection
+              .as("games"); // Output array field
+  
+      // Unwind the games array
+      UnwindOperation unwindStage = Aggregation.unwind("$games");
+  
+      // Group by gid and retain the first occurrence of fields
+      GroupOperation groupStage = Aggregation.group("$gid")
+              .first("$games.name").as("name")
+              .max("$rating").as("maxrating")
+              .first("$user").as("user")
+              .first("$c_text").as("comment")
+              .first("$_id").as("review");
+  
+      // Limit the results to 10 documents
+      LimitOperation limitStage = Aggregation.limit(10);
+  
+      // Define the aggregation pipeline
+      Aggregation aggregation = Aggregation.newAggregation(
+              sortStage, // Sort first
+              lookupStage, // Then perform the lookup
+              unwindStage, // Unwind the games array
+              groupStage, // Group by gid
+              limitStage // Limit the results
+      );
+  
+      // Execute the aggregation
+      AggregationResults<Document> results = template.aggregate(
+              aggregation, "comments", Document.class
+      );
+      Document bigDocument = new Document();
+      bigDocument.put("rating","highest");
+      bigDocument.put("games",results.getMappedResults());
+      bigDocument.put("timestamp",new Date());
+  
+      // Return the mapped results
+      return bigDocument;
+  }
 
     
     

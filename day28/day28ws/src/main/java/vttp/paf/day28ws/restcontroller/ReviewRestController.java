@@ -42,6 +42,15 @@ public class ReviewRestController {
         Document gameDoc = reviewRepo.getGameDoc(gid);
         return ResponseEntity.status(200).header("Content-Type", "application/json").body(gameDoc);
     }
+    @GetMapping("games/highest2")
+    public ResponseEntity<?> getHighestRatedGames2() {
+        Document document = reviewRepo.getHighestRatedGamesDocuments();
+        //method 1) build json response
+        //2) show the document directly
+        //3) build model response
+        
+        return ResponseEntity.status(200).header("Content-Type", "application/json").body(document);
+    }
 
     @GetMapping("games/highest")
     public ResponseEntity<?> getHighestRatedGames() {
