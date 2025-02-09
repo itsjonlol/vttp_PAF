@@ -19,8 +19,11 @@ public class Day27lApplication implements CommandLineRunner{
 	public void run(String... args) throws Exception {
 		// TODO Auto-generated method stub
 		// taskRepo.delete();
-		taskRepo.deleteOne();
+		// taskRepo.deleteOne();
 		// taskRepo.searchComments("enjoyable","fun times");
+		// taskRepo.updateOne("67a48fb4b3c5401e4ac191b9");
+		// taskRepo.updateMulti();
+		taskRepo.upsert();
 	}
 
 }

@@ -145,5 +145,97 @@ public class TaskRepo {
         System.out.printf("Deleted documents: %d\n", result.getDeletedCount());
 
     }
+    /*
+     * db.tasks.updateOne(
+    {
+        _id: ObjectId("67a48fb4b3c5401e4ac191b9")
+    },
+    {
+       $push: {
+           testarray: {$each:[1,2]}
+       }
+    }
+)
+     */
+    public void updateOne(String id) {
+        ObjectId objectId = new ObjectId(id);
+        //works with either objectid or regular id
+        Criteria criteria = Criteria.where("_id").is(id);
+        Query query = new Query(criteria);
+
+        // Update updateOps = new Update()
+        //     .set("lang", "id");
+        List<Integer> numbers = new ArrayList<>();
+        numbers.add(1);
+        numbers.add(2);
+        Update updateOps = new Update()
+            .push("testarray")
+            .each(numbers);
+        // Update updateOps = new Update()
+        //     .unset("testarray");
+        UpdateResult result = template.updateFirst(query, updateOps, "tasks");
+        System.out.printf("Documents updated: %d\n", result.getModifiedCount());
+}
+
+    /*
+     * db.tasks.updateMany(
+    {
+        name: "jon"
+    },
+    {
+        $set: {
+            status: "ended"
+        },
+        $inc: {
+           average: 1
+        }
+    }
+)
+     */
+    public void updateMulti() {
+        Criteria criteria = Criteria.where("name").is("jon");
+        Query query = new Query(criteria);
+        Update updateOps = new Update()
+            .set("status","ended")
+            .inc("average",2);
+        UpdateResult result = template.updateMulti(query, updateOps, "tasks");
+        System.out.printf(">>>Matched: %d\n",result.getMatchedCount());
+        System.out.printf(">>>Modify: %d\n",result.getModifiedCount());
+        System.out.printf(">>>Upserted: %d\n",result.getUpsertedId());
+
+
+    }
+    /*
+     * db.tasks.update(
+    {
+        name: "joseph"
+    },
+    {
+        $push: {
+            genres: "mystery"
+        }
+    },
+    {
+        upsert:false
+    }
     
+)
+     */
+    public void upsert() {
+        Criteria criteria = Criteria.where("name").is("joseph1");
+        Query query = new Query(criteria);
+        List<Integer> numbers = new ArrayList<>();
+        numbers.add(1);
+        numbers.add(2);
+        Update updateOps = new Update()
+            .push("genres").each("mystery")
+            .push("numbers").each(numbers)
+            .push("testnumbers").each("1","2","3");
+        UpdateResult result = template.upsert(query, updateOps, "tasks");
+    
+        System.out.printf(">>>Matched: %d\n",result.getMatchedCount());
+        System.out.printf(">>>Modify: %d\n",result.getModifiedCount());
+        System.out.printf(">>>Upserted: %d\n",result.getUpsertedId());
+
+    }
 }
