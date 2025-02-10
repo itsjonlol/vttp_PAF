@@ -69,7 +69,7 @@ public class ListingsController {
         mav.setStatus(HttpStatus.BAD_REQUEST);  // Use the correct status
         mav.addObject("errorMessages", errorMessages);  // Add all error messages
     }
-		List<Listings> listings = listingsService.getListings(country, accommodates, price);
+		List<Listings> listings = listingsService.getListings2(country, accommodates, price);
 		
 		
 		mav.addObject("listings",listings);
@@ -145,6 +145,7 @@ public class ListingsController {
 		Boolean isVacant = listingsService.isVacant(accommodationId, reservations.getDuration());
 		if (!isVacant) {
 			mav.setViewName("view3");
+			//need to add the table again to the model
 			mav.addObject("listingdetails", optListingsFull.get());
 			mav.addObject("errorBooking", "No vacancy available for the selected duration");
 			return mav;

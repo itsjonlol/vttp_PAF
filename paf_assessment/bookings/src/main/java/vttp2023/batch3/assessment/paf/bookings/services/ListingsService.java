@@ -27,6 +27,9 @@ public class ListingsService {
 	public List<Listings> getListings(String country,Integer accommodates,Integer price ) {
 		return listingsRepo.getListings(country, accommodates, price);
 	}
+	public List<Listings> getListings2(String country,Integer accommodates,Integer price ) {
+		return listingsRepo.getListings2(country, accommodates, price);
+	}
 
 	//TODO: Task 4
 	public Optional<ListingsFull> getListingsDetails(String accommodationId) {
@@ -45,6 +48,7 @@ public class ListingsService {
 	public void insertReservation(Reservations reservations) {
 		listingsRepo.insertReservation(reservations);
 		listingsRepo.updateVacancy(reservations.getAccId(), reservations.getDuration());
+		
 	}
 
 }
