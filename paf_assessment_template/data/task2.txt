@@ -2,7 +2,7 @@ Write your Task 2 answers in this file
 
 #task 2.1
 mongoimport --host=localhost --port=27017 -d bedandbreakfast -c listings_and_reviews --type=json --file=data/listings.json
-mongoimport --db=bedandbreakfast --collection=listings_and_reviews --type=json --file=data/listings.json --uri="mongodb://mongo:dAPngYubnJTptWTBFvEpmgciKLeKRmqS@autorack.proxy.rlwy.net:36410/?authSource=admin"
+
 #task 2.2
 base search
 db.listings_and_reviews.find({
@@ -99,4 +99,3 @@ db.listings.updateMany(
 
 #task 2.5
 mongoexport --host=localhost --port=27017 --db=bedandbreakfast --collection=reviews --type=csv --out=data/reviews.csv --fields=date,listing_id,reviewer_name,comments
-mongoexport --uri="mongodb://mongo:dAPngYubnJTptWTBFvEpmgciKLeKRmqS@autorack.proxy.rlwy.net:36410/bedandbreakfast?authSource=admin" --db=bedandbreakfast --collection=reviews --type=csv --out=data/mongoreviews2.csv --fields=date,listing_id,reviewer_name,comments
