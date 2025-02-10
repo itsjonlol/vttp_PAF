@@ -66,7 +66,6 @@ public class ListingsService {
 	public void createBooking(Bookings booking) {
 		bookingsRepo.newBookings(booking);
 		
-		
 	}
 
 	public Optional<User> userExists(String email) {

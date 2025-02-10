@@ -7,6 +7,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Repository;
 
+import vttp2023.batch4.paf.assessment.exceptions.exception.BookingErrorException;
 import vttp2023.batch4.paf.assessment.models.Bookings;
 import vttp2023.batch4.paf.assessment.models.User;
 
@@ -24,7 +25,7 @@ public class BookingsRepository {
 
 	// You may use this method in your task
 	public Optional<User> userExists(String email) {
-		SqlRowSet rs = template.queryForRowSet(SQL_SELECT_USER_BY_EMAIL, email );
+		SqlRowSet rs = template.queryForRowSet(SQL_SELECT_USER_BY_EMAIL, "%%%s%%".formatted(email));
 		if (!rs.next())
 			return Optional.empty();
 
@@ -36,7 +37,7 @@ public class BookingsRepository {
 	// You may only add throw exceptions to this method
 	public void newUser(User user) {
 		int updated = template.update(SQL_CREATE_NEW_USER,user.email(),user.name());
-		//if updated == 0?
+		
 		
 	}
 
@@ -48,6 +49,9 @@ public class BookingsRepository {
 		
 		int updated = template.update(SQL_CREATE_NEW_BOOKING, bookings.getBookingId(),
 		bookings.getListingId(),bookings.getDuration(),bookings.getEmail());
+		if (updated <0) {
+			throw new BookingErrorException("failed to book");
+		}
 		
 		
 	}

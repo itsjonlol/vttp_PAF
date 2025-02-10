@@ -29,10 +29,14 @@ public class ListingsRepository {
 	 * eg. db.bffs.find({ name: 'fred }) 
 	 *
 	 *db.listings.distinct( "address.suburb" , { "address.suburb" : { $nin : ["", null] } });
+	 OR
+	 db.listings.distinct("address.suburb",{"address.suburb":{$ne:""}})
 	 */
 	public List<String> getSuburbs(String country) {
-		Query query = new Query();
-        query.addCriteria(Criteria.where("address.suburb").nin("", null));
+		// Criteria criteria = Criteria.where("address.suburb").nin(Arrays.asList("", null));
+		Criteria criteria = Criteria.where("address.suburb").nin("",null);
+		Query query = new Query(criteria);
+        
 
         return template.findDistinct(query, "address.suburb", "listings", String.class);
 	}
@@ -41,16 +45,14 @@ public class ListingsRepository {
 	 * Write the native MongoDB query that you will be using for this method
 	 * inside this comment block
 	 * eg. db.bffs.find({ name: 'fred }) 
-	 *db.listings.find({
+	 db.listings.find({
     $and:[
-        {"address.suburb":"Alexandria"},
-        {accommodates: {$gte: persons}}, 
-        {min_nights: {$lte: duration}},
-        {price: {$lte: pricerange}} // Price should be less than or equal to 100
+    {"address.suburb":{$regex:"Monterey",$options:"i"}},
+    {"accommodates":{$gte:2}},
+    {"price":{$lte:100}},
+    {"min_nights":{$gte:1}}
     ]
-})
-	.projection({_id:1,name:1,accommodates:1,price:1,min_nights:1})
-	.sort({price:-1});
+}).projection({_id:1,name:1,accommodates:1,price:1,min_nights:1}).sort({price:-1});
 	 *
 	 */
 	public List<AccommodationSummary> findListings(String suburb, int persons, int duration, float priceRange) {
