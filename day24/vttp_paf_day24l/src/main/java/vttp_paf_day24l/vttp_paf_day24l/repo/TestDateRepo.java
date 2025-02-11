@@ -22,6 +22,10 @@ public class TestDateRepo {
 
     public static final String SQL_TESTDATE = "select * from example_table where name = ?";
 
+    public static final String SQL_INSERT_DATES = """
+        insert into example_table(name,date_column,datetime_column,timestamp_column) values (?,?,?,?)
+            """;
+
     public TestDate testDate() {
         SqlRowSet rs = template.queryForRowSet(SQL_TESTDATE,"lol");
         if (!rs.next()) {
@@ -38,7 +42,7 @@ public class TestDateRepo {
         
         System.out.println("datetime column is " + rs.getString("datetime_column"));
         System.out.println("timestamp column is " + rs.getString("timestamp_column"));
-
+        //normal date can be mapped normally OR USE STRING
         testDate.setDate(rs.getDate("date_column"));
         try {
             testDate.setDateTime(sdfDateTime.parse(rs.getString("datetime_column")));
@@ -54,11 +58,26 @@ public class TestDateRepo {
         return testDate;
     }
     public void insertTestDate(TestDate testDate) {
-        testDate.setName("testing dates");
-        testDate.setDate(new Date());
-        testDate.setDateTime(new Date());
-        testDate.setTimeStamp(new Date());
         
+        // testDate.setDate(new Date());
+        // testDate.setDateTime(new Date());
+        // testDate.setTimeStamp(new Date());
+        template.update(SQL_INSERT_DATES,testDate.getName(),testDate.getDate(),
+            testDate.getDateTime(),testDate.getTimeStamp());
+        //timestamp and datetime -> inserted with 0800
+        System.out.println(testDate.getName());
+        System.out.println(testDate.getDate());
+        System.out.println(testDate.getDateTime());
+        System.out.println(testDate.getTimeStamp());
+
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        //if want to get more accurate
+        String formattedDate1 = sdf.format(testDate.getDate());
+        String formattedDate2 = sdf.format(testDate.getDateTime());
+        String formattedDate3 = sdf.format(testDate.getTimeStamp());
+                
+        template.update(SQL_INSERT_DATES,testDate.getName(),formattedDate1,formattedDate2,formattedDate3);
+        // template.update(SQL_INSERT_DATES,"Jong",new Date(),new Date(),new Date(),new Date());
     }
 
 }
