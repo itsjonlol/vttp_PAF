@@ -15,7 +15,8 @@ select "creating example_table";
 CREATE TABLE example_table (
     id INT PRIMARY KEY AUTO_INCREMENT,
     name varchar(256) not null,
-    date_column DATE DEFAULT (CURRENT_DATE),              
+    date_column DATE DEFAULT (CURRENT_DATE),
+    date_column2 DATE DEFAULT (current_date()),             
     datetime_column DATETIME DEFAULT CURRENT_TIMESTAMP,    
     timestamp_column TIMESTAMP DEFAULT CURRENT_TIMESTAMP 
 );
