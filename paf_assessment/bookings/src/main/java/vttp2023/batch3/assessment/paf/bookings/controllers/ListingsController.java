@@ -69,7 +69,7 @@ public class ListingsController {
         mav.setStatus(HttpStatus.BAD_REQUEST);  // Use the correct status
         mav.addObject("errorMessages", errorMessages);  // Add all error messages
     }
-		List<Listings> listings = listingsService.getListings2(country, accommodates, price);
+		List<Listings> listings = listingsService.getListings(country, accommodates, price);
 		
 		
 		mav.addObject("listings",listings);

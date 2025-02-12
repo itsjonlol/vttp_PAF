@@ -44,9 +44,10 @@ public class ListingsRepository {
 	 * db.listings.distinct("address.country")
 	 */
 	public List<String> getCountries() {
-		
+		List<String> countries = template.findDistinct(new Query(), F_ADDRESS_COUNTRIES, C_LISTINGS, String.class);
 
-        return template.findDistinct(new Query(), F_ADDRESS_COUNTRIES, C_LISTINGS, String.class);
+		countries.forEach(c -> System.out.println(c));
+        return countries;
 	}
 	
 	//TODO: Task 3
@@ -94,6 +95,7 @@ public class ListingsRepository {
 				return listings;
 			})
 			.toList();
+		
 		return resultsListings;
 	}
 	//if want to use aggregation, can project directly, so dont need to use document class for image
@@ -193,10 +195,10 @@ public class ListingsRepository {
 		.and("description").as("description") 
 		.and("amenities").as("amenities") 
 		.and("price").as("price")
-		.and("images.picture_url").as("image")
-		.and("address.street").as("address_street")
+		.and("$images.picture_url").as("image")
+		.and("$address.street").as("address_street")
 		.and("address.suburb").as("address_suburb")
-		.and("address.country").as("address_country");
+		.and("$address.country").as("address_country");
 
 		Aggregation pipeline = Aggregation.newAggregation(
                 matchStage,
