@@ -30,7 +30,7 @@ RUN mvn package -Dmaven.test.skip=true
 # # Run the application
 # ENTRYPOINT SERVER_PORT=${SERVER_PORT} java -jar target/ssfproject-SNAPSHOT.jar
 
-#docker build -t itsjonlol/ssfproject:0.0.1 . 
+#docker build -t itsjonlol/vttp2023_batch4_paf:0.0.1 . 
 
 #Stage 2
 FROM maven:3.9.9-eclipse-temurin-23

@@ -42,10 +42,14 @@ CREATE TABLE reviews (
 
 
 );
-SELECT "INSERTING INTO USERS";
-INSERT INTO users()
-VALUES ("fred@gmail.com", "Fred Flintstone"),("barney@gmail.com", "Barney Rubble"),
-("fry@planetexpress.com", "Philip J Fry"),("hlmer@gmail.com", "Homer Simpson");
+-- remove if not needed
+SET GLOBAL local_infile = 1;
+load data local infile "users.csv" into table users fields terminated by "," ignore 1 rows;
+
+-- SELECT "INSERTING INTO USERS";
+-- INSERT INTO users()
+-- VALUES ("fred@gmail.com", "Fred Flintstone"),("barney@gmail.com", "Barney Rubble"),
+-- ("fry@planetexpress.com", "Philip J Fry"),("hlmer@gmail.com", "Homer Simpson");
 
 
 -- Grant fred access to the database
