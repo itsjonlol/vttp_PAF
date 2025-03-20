@@ -1,11 +1,13 @@
 package vttp2023.batch3.assessment.paf.bookings.repositories;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
 import org.bson.Document;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.AggregationResults;
@@ -26,7 +28,6 @@ import static vttp2023.batch3.assessment.paf.bookings.utils.DocumentToListingsFu
 import static vttp2023.batch3.assessment.paf.bookings.utils.MongoConstants.C_LISTINGS;
 import static vttp2023.batch3.assessment.paf.bookings.utils.MongoConstants.F_ACCOMMODATES;
 import static vttp2023.batch3.assessment.paf.bookings.utils.MongoConstants.F_ACCOMMODATION_ID;
-import static vttp2023.batch3.assessment.paf.bookings.utils.MongoConstants.F_ADDRESS_COUNTRIES;
 import static vttp2023.batch3.assessment.paf.bookings.utils.MongoConstants.F_PRICE;
 import static vttp2023.batch3.assessment.paf.bookings.utils.SQLConstants.SQL_CHECK_VACANCY;
 import static vttp2023.batch3.assessment.paf.bookings.utils.SQLConstants.SQL_INSERT_RESERVATIONS;
@@ -43,11 +44,33 @@ public class ListingsRepository {
 	/*
 	 * db.listings.distinct("address.country")
 	 */
+	/*db.listings.distinct("address.country",{"address.country":{$nin:["",null]}}) */
+	/*
+	 * db.listings.distinct("address.country",{
+    $and:[
+    {"address.country":{$ne:""}},
+    {"address.country":{$ne:null}}
+    ]
+})
+	 */
 	public List<String> getCountries() {
-		List<String> countries = template.findDistinct(new Query(), F_ADDRESS_COUNTRIES, C_LISTINGS, String.class);
+		// List<String> countries = template.findDistinct(new Query(), F_ADDRESS_COUNTRIES, C_LISTINGS, String.class);
 
-		countries.forEach(c -> System.out.println(c));
-        return countries;
+		// countries.forEach(c -> System.out.println(c));
+        // return countries;
+
+	
+		Criteria criteria = Criteria.where("address.country").nin(Arrays.asList("",null));
+
+		// Criteria  criteria2 = Criteria.where("address.country")
+		Criteria criteria2 = new Criteria();
+		criteria2.andOperator(
+			Criteria.where("address.country").ne(""),
+			Criteria.where("address.country").ne(null)
+		);
+		Query query = Query.query(criteria2);
+		List<String> countries = template.findDistinct(query,"address.country",C_LISTINGS,String.class);
+		return countries;
 	}
 	
 	//TODO: Task 3
@@ -63,24 +86,34 @@ public class ListingsRepository {
 	 */
 	public List<Listings> getListings(String country, Integer accommodates, Integer price) {
 		// Create criteria to filter listings
-		Criteria criteria = new Criteria(); 
-		criteria = criteria.andOperator(
-			// Use regex for case-insensitive match on suburb
-			Criteria.where(F_ADDRESS_COUNTRIES).regex(country, "i"), 
-			Criteria.where(F_ACCOMMODATES).is(accommodates), 
+		// Criteria criteria = new Criteria(); 
+		// criteria = criteria.andOperator(
+		// 	// Use regex for case-insensitive match on suburb
+		// 	Criteria.where(F_ADDRESS_COUNTRIES).regex(country, "i"), 
+		// 	Criteria.where(F_ACCOMMODATES).is(accommodates), 
+		// 	Criteria.where(F_PRICE).gte(1).lt(price)
+		// );
+	
+		// // Build the query
+		// Query query = Query.query(criteria)
+		// 	.with(Sort.by(Sort.Direction.DESC, F_PRICE)); // Sort by price in descending order
+	
+		// query.fields()
+		// 	.include("_id")
+		// 	.include("name")
+		// 	.include("accommodates")
+		// 	.include("price")
+		// 	.include("images.picture_url");
+
+		Criteria criteria = new Criteria();
+		criteria.andOperator(
+			Criteria.where("address.country").regex(country,"i"),
+			Criteria.where(F_ACCOMMODATES).is(accommodates),
 			Criteria.where(F_PRICE).gte(1).lt(price)
 		);
+		Query query = Query.query(criteria);
+		query.fields().include("_id","name","accommodates","price","images.picture_url");
 	
-		// Build the query
-		Query query = Query.query(criteria)
-			.with(Sort.by(Sort.Direction.DESC, F_PRICE)); // Sort by price in descending order
-	
-		query.fields()
-			.include("_id")
-			.include("name")
-			.include("accommodates")
-			.include("price")
-			.include("images.picture_url");
 	
 		// Else use aggregation
 		List<Document> resultsDoc = template.find(query, Document.class, C_LISTINGS);
@@ -91,6 +124,7 @@ public class ListingsRepository {
 				listings.setName(d.getString("name"));
 				listings.setPrice(d.getDouble("price").intValue());
 				//document class for object
+				// need to query the inner document first
 				listings.setImage(d.get("images", Document.class).getString("picture_url"));
 				return listings;
 			})
@@ -124,25 +158,42 @@ public class ListingsRepository {
 	 */
 	public List<Listings> getListings2(String country,Integer accommodates,Integer price) {
 
+		// Criteria criteria = new Criteria();
+		// criteria = criteria.andOperator(
+		// 	Criteria.where(F_ADDRESS_COUNTRIES).regex(country, "i"), 
+		// 	Criteria.where(F_ACCOMMODATES).is(accommodates), 
+		// 	Criteria.where(F_PRICE).gte(1).lt(price)
+		// );
+		// MatchOperation matchStage = Aggregation.match(criteria);
+		// SortOperation sortStage = Aggregation.sort(Sort.Direction.DESC, F_PRICE);
+		// ProjectionOperation projectStage = Aggregation.project("_id","name","price")
+		// 	.and("$images.picture_url").as("imageurl");
+
+		// Aggregation pipeline = Aggregation.newAggregation(
+        //         matchStage,
+        //         sortStage,
+        //         projectStage
+        // );
+        
+
 		Criteria criteria = new Criteria();
-		criteria = criteria.andOperator(
-			Criteria.where(F_ADDRESS_COUNTRIES).regex(country, "i"), 
-			Criteria.where(F_ACCOMMODATES).is(accommodates), 
+		criteria.andOperator(
+			Criteria.where("address.country").regex(country,"i"),
+			Criteria.where(F_ACCOMMODATES).is(accommodates),
 			Criteria.where(F_PRICE).gte(1).lt(price)
 		);
-		MatchOperation matchStage = Aggregation.match(criteria);
-		SortOperation sortStage = Aggregation.sort(Sort.Direction.DESC, F_PRICE);
-		ProjectionOperation projectStage = Aggregation.project("_id","name","price")
+
+		MatchOperation matchOperation = Aggregation.match(criteria);
+
+		SortOperation sortOperation = Aggregation.sort(Sort.by(Direction.DESC, F_PRICE));
+		ProjectionOperation projectionOperation = Aggregation.project("_id","name","price")
 			.and("$images.picture_url").as("imageurl");
 
-		Aggregation pipeline = Aggregation.newAggregation(
-                matchStage,
-                sortStage,
-                projectStage
-        );
-        
-        // Execute the aggregation
-        AggregationResults<Document> results = template.aggregate(pipeline, C_LISTINGS, Document.class);
+		Aggregation pipeline = Aggregation.newAggregation(matchOperation,sortOperation,projectionOperation);
+		AggregationResults<Document> results =template.aggregate(pipeline,C_LISTINGS,Document.class);
+
+     
+
 		List<Document> documents = results.getMappedResults();
 
 
@@ -190,11 +241,18 @@ public class ListingsRepository {
 
         // Build the aggregation pipeline
 
-		ProjectionOperation projectStage = Aggregation.project()
-		.and("_id").as("_id") 
-		.and("description").as("description") 
-		.and("amenities").as("amenities") 
-		.and("price").as("price")
+		// ProjectionOperation projectStage = Aggregation.project()
+		// .and("_id").as("_id") 
+		// .and("description").as("description") 
+		// .and("amenities").as("amenities") 
+		// .and("price").as("price")
+		// .and("$images.picture_url").as("image")
+		// .and("$address.street").as("address_street")
+		// .and("address.suburb").as("address_suburb")
+		// .and("$address.country").as("address_country");
+
+		ProjectionOperation projectStage = Aggregation.project("_id","description","amenities",
+		"price")
 		.and("$images.picture_url").as("image")
 		.and("$address.street").as("address_street")
 		.and("address.suburb").as("address_suburb")
@@ -209,7 +267,7 @@ public class ListingsRepository {
         AggregationResults<Document> results = template.aggregate(pipeline, C_LISTINGS, Document.class);
 		List<Document> documents = results.getMappedResults();
 		System.out.println(documents.size());
-		
+		//get the first document from the list of documents
 		Document result = documents.get(0);
 
         // Get the result
